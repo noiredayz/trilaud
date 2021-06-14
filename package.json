@@ -1,0 +1,28 @@
+{
+  "name": "trilaud",
+  "version": "0.0.1",
+  "description": "twitch emote and gift farmer WideHardo",
+  "main": "triLaud.js",
+  "scripts": {
+    "test": "return \"no test saj\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noiredayz/trilaud.git"
+  },
+  "keywords": [
+    "twitch",
+    "trihard"
+  ],
+  "dependencies": {
+    "dank-twitch-irc": "~4.3.0",
+    "date-fns": "~2.19.0",
+    "node-wav-player": "~0.2.0"
+  },
+  "author": "noiredayz",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/noiredayz/trilaud/issues"
+  },
+  "homepage": "https://github.com/noiredayz/trilaud#readme"
+}
