@@ -34,6 +34,11 @@ client.on("close", onClose);
 client.on("error", onError);
 client.on("PRIVMSG", incomingMessage);
 client.on("USERNOTICE", onUserNotice);
+clinet.on("RECONNECT", onReconnect);
+
+function onReconnect(){
+	prl(`<cc> TMI requested reconnect, reconnecting...`);
+}
 
 function onConnecting(){
 	ptl(`<cc> Connecting to TMI`);
@@ -58,7 +63,8 @@ function onError(inErr){
 		process.exit(1);
 	}
 	if(inErr.name==="ReconnectError"){
-		ptl(`<cc> Twitch requested reconnect.... so yeah. Full restart Pepega Clap`);
+		ptl(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`);
+		ptl(`<cc> Restarting application as a safety measure`);
 		process.exit(0);
 	}
 }
