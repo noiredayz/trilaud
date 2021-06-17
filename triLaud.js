@@ -34,7 +34,7 @@ client.on("close", onClose);
 client.on("error", onError);
 client.on("PRIVMSG", incomingMessage);
 client.on("USERNOTICE", onUserNotice);
-clinet.on("RECONNECT", onReconnect);
+client.on("RECONNECT", onReconnect);
 
 function onReconnect(){
 	prl(`<cc> TMI requested reconnect, reconnecting...`);
