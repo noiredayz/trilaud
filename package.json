@@ -17,7 +17,7 @@
   "dependencies": {
     "dank-twitch-irc": "~4.3.0",
     "date-fns": "~2.19.0",
-    "node-wav-player": "~0.2.0"
+    "node-wav-player": "git+https://github.com/noiredayz/node-wav-player.git"
   },
   "author": "noiredayz",
   "license": "GPL-3.0-or-later",
