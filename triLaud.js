@@ -112,29 +112,24 @@ function LoadChannels(inFile){
 		ptlw(`<warn> channels.txt is empty or contains no valid channel adata`);
 		return -1;
 	}
-	switch(conf.lines.toLowerCase()){
-		case "lf":
-		case "\n":
-		case "unix":
-			le="\n";
+	buff = buff.toString();
+	switch(detectLineEndings(buff)){
+		case "CR":
+			le = "\r";
 			break;
-		case "cr":
-		case "\r":
-		case "mac":
-			le="\r";
+		case "LF":
+			le = "\n";
 			break;
-		case "crlf":
-		case "\r\n":
-		case "dos":
-		case "win":
-		case "windows":
-			le="\r\n";
+		case "CRLF":
+			le = "\r\n";
+			break;
+		case "NONE":
+			le = " ";
 			break;
 		default:
-			le=os.EOL;
+			//NaM
 			break;
-		}
-	buff = buff.toString();
+	}
 	buff = buff.split(le);
 	for(let b of buff){
 		inch = b.trim();
@@ -177,5 +172,16 @@ function ReloadChannels(){
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function detectLineEndings(inTxt){
+	const cr	= inTxt.split("\r").length;
+	const lf	= inTxt.split("\n").length;
+	const crlf	= inTxt.split("\r\n").length;
+	
+	if(cr+lf===0) return "NONE";
+	if(cr === crlf && lf === crlf) return "CRLF";
+	if(cr>lf) return "CR";
+	else return "LF";
 }
 

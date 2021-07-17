@@ -3,8 +3,7 @@ exports.trilaud_config = {
 	username: "",			//your username
 	oauth: "",				//get it from https://twitchapps.com/tmi/
 	pingsound: "",			//sound to play when you get binged (WIP)
-	giftsound: "",			//sound to play when get a gift
-	lines: "OS"				//line endings in your channels.txt, see below
+	giftsound: ""			//sound to play when get a gift
 }
 
 /*
@@ -14,15 +13,6 @@ exports.trilaud_config = {
  * YES: C:\\sounds\\bing.wav
  * NO: C:\sounds\bing.wav
  *
- * Line endings: you can specify how the lines end in your channels.txt
- * Leave it to OS for operatg system default.
- * Otherwise, you can set it to:
- * dos or win for DOS style CR-LF (\r\n) line endings
- * unix for UNIX style LF (\n) line endings
- * mac for Applel style CR (\r) line endings.
- * Hope you know what you're doing.
- * Remember to praise God that we don't have more tard ways to end lines
- * in text files (inb4 there are forsenInsane)
  */
  
  
