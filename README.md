@@ -2,12 +2,15 @@
 Gifted sub farmer for Twitch TriHard :handshake: VisLaud
 ## Features ##
 * Synchronous channel join vadiChad
-* play a sound when you get a gift (planned feature: also when you get pinged), if enabled
-* add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR1
+* Play a sound when you get a gift (planned feature: also when you get pinged), if enabled
+* Add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR1
 * Free software under the GNU GPL. Bug reports and feature requests are welcome.
 * Designed for unattended use. Set it up and forget about it (kinda Okayeg)
 * No need to register a dedicated Twitch application for it
-* Should run just fine on Windows, OSX and GNU/Linux. Should run, but no sound playback on BSDs (TBI).
+* Should run just fine on Windows, OSX and GNU/Linux. On Free and Dragonfly BSD you'll need the alsa utils compatibility package to hear sounds
+* Shoult run on other platforms supported by node.js, but without sound playback for now.
+* No architecture specifc code I know of. You can run it on your Raspberry PI 24/7!
+
 ## What does this do? ##
 This simple nodejs program joins a bunch of Twitch channels for ya, so you can yoink gifted subs and event emotes WideHardo
 ## What doesn't this program do ##
