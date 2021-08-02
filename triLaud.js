@@ -7,6 +7,7 @@ const os = require("os");
 const conf = require("./config.js").trilaud_config;
 const ptl = console.log;
 const ptlw = console.warn;
+const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
 let channels = [];
 let activechannels = [];
 
@@ -145,11 +146,12 @@ function LoadChannels(inFile){
 }
 
 async function JoinChannels(){
-	let isfailed=0;
+	let isfailed=0, stime, ptime;
 	LoadChannels("channels.txt");
 	for(let c of channels){
 		if(activechannels.findIndex(ac => ac === c)===-1){
 			isfailed = 0;
+			stime = new Date;
 			try { await client.join(c); }
 			catch(err){
 				ptlw(`<error> Error while trying to join ${c}: ${err}`);
@@ -159,6 +161,8 @@ async function JoinChannels(){
 				if(!isfailed){
 					ptl(`Successfully joined channel ${c}`);
 					activechannels.push(c);
+					ptime = joinDelay-(new Date - stime);
+					if(ptime>0) await sleep(ptime);
 				}
 			}
 		}
