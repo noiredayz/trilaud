@@ -133,7 +133,7 @@ function LoadChannels(inFile){
 	}
 	buff = buff.split(le);
 	for(let b of buff){
-		inch = b.trim();
+		inch = b.trim().toLowerCase();
 		if(inch.length<3) continue;
 		if(channels.findIndex(c=> c===inch) !== -1){
 			//ptl(`<loadchannels> Channel ${inch} is already in the array, skipping`);
