@@ -1,8 +1,9 @@
 "use strict";
 exports.trilaud_config = {
 	username: "",			//your username
+	alertOnPings: false,	//set it true if you want messages containing your username logged		
 	oauth: "",				//get it from https://twitchapps.com/tmi/
-	pingsound: "",			//sound to play when you get binged (WIP)
+	pingsound: "",			//sound to play when you get binged if alertOnPings is set to true
 	giftsound: ""			//sound to play when get a gift
 }
 

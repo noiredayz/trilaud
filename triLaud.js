@@ -74,12 +74,12 @@ async function onUserNotice(inMsg){
 	if(inMsg.isSubgift() || inMsg.isAnonSubgift()){
 		if (inMsg.eventParams.recipientUsername.toLowerCase() === conf.username.toLowerCase()){
 			ptl(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`);
-		if(config.giftsound.length>0){
-					try { await player.play({path: conf.giftsound}); }
-					catch(err){
-					ptlw(`<soundplayer> Sound playback failed: ${err}`);
-					}
+			if(conf.giftsound.length>0){
+				try { await player.play({path: conf.giftsound}); }
+				catch(err){
+					ptlw(`<soundplayer> Gift sound playback failed: ${err}`);
 				}
+			}
 		}
 		else {
 			ptl(`[${gftime()}] ${inMsg.displayName || 'An anonymous gifter'} gifted a sub to ${inMsg.eventParams.recipientUsername} in #${inMsg.channelName}`);
@@ -88,10 +88,20 @@ async function onUserNotice(inMsg){
 }
 
 async function incomingMessage(inMsg){
+	if(!conf.alertOnPings) return;
 	let sender 	= inMsg.senderUsername.toLowerCase();
 	let message = String(inMsg.messageText);
 	let channel = inMsg.channelName;
-	//todo: nam
+	const rx = new RegExp(conf.username, "i");
+	if(rx.test(message) && sender!=conf.username){
+		ptl(`[${gftime()}] ${sender} pinged you in #${channel}: ${message}`);
+		if(conf.pingsound.length>0){
+			try { await player.play({path: conf.pingsound}); }
+			catch(err){
+				ptlw(`<soundplayer> Ping sound playback failed: ${err}`);
+			}
+		}
+	}
 }
 
 client.connect();
