@@ -38,7 +38,7 @@ client.on("USERNOTICE", onUserNotice);
 client.on("RECONNECT", onReconnect);
 
 function onReconnect(){
-	prl(`<cc> TMI requested reconnect, reconnecting...`);
+	ptl(`<cc> TMI requested reconnect, reconnecting...`);
 }
 
 function onConnecting(){
