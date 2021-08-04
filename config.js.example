@@ -4,7 +4,9 @@ exports.trilaud_config = {
 	alertOnPings: false,	//set it true if you want messages containing your username logged		
 	oauth: "",				//get it from https://twitchapps.com/tmi/
 	pingsound: "",			//sound to play when you get binged if alertOnPings is set to true
-	giftsound: ""			//sound to play when get a gift
+	giftsound: "",			//sound to play when get a gift
+	restartOnCapError: true	//set it to false to not restart the client on capabilitieserrors
+							//DANGEROUS! only use it if you know what you're doing pajaS
 }
 
 /*

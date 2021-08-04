@@ -26,6 +26,9 @@ if(conf.pingsound==="")
 	ptlw(`<warn> pingsound setting is empty in config.js. No sound will be played when you get pinged`);
 if(conf.giftsound==="")
 	ptlw(`<warn> giftsound setting is empty in config.js. No sound will be played when you get a gift`);
+if(typeof(conf.restartOnCapError)==="undefined"){
+	ptlw(`<warn> WARNING! Configuration setting restartOnCapError is missing! Please add the option to config. See config.js.example for details.`);
+}	
 
 const client = new ChatClient({username: conf.username, password: conf.oauth});
 client.on("connecting", onConnecting);
@@ -59,9 +62,20 @@ function onClose(){
 }
 function onError(inErr){
 	ptl(`<cc> Chatclient error detected: ${inErr}`);
-	if (inErr.name==="CapabilitiesError" || inErr.name==="LoginError"){
-		ptl(`<cc> Capability error or login error detected, cannot continue. Terminating application.`);
+	if (inErr.name==="LoginError"){
+		ptl(`<cc> Login error detected, cannot continue. Terminating application.`);
 		process.exit(1);
+	}
+	if(inErr.name==="CapabilitiesError"){
+		if(conf.restartOnCapError){
+			ptl(`<cc> Capabilities error detected. Terminating application as per the configuration setting.`);
+			process.exit(1);
+		} else {
+			ptl(`<cc> Capabilities error detected, but not doing anything because the configuration setting says no.`);
+			ptl(`<cc> If the program seems to not do anything/you disappear from chat/messages stop coming it's advised to restart it.`);
+			return;
+		}
+			
 	}
 	if(inErr.name==="ReconnectError"){
 		ptl(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`);
