@@ -4,6 +4,7 @@ const player = require("node-wav-player");
 const df = require("date-fns");
 const fs = require("fs");
 const os = require("os");
+const chalk = require("chalk");
 const conf = require("./config.js").trilaud_config;
 const ptl = console.log;
 const ptlw = console.warn;
@@ -12,23 +13,32 @@ let channels = [];
 let activechannels = [];
 
 process.on("SIGUSR1", ReloadChannels);
+if(typeof(conf.textcolors)==="undefined"){
+	ptlw(`<warn> Configuration setting textcolors is missing, not colorizing output. If you want colors add it to config and set it to true. See config.js.example for details.`);
+	chalk.level = 0;
+} else {
+	if(conf.textcolors===false)
+		chalk.level = 0;
+}
+
 try{
 	fs.writeFileSync("./pid", process.pid);
 }
 catch(err){
-	ptlw(`<error> Unable to write pid to file: ${err}`);
+	ptlw(chalk.red(`<error> Unable to write pid to file: ${err}`));
 }
 
 ptl(`<startup> TriLaud v0.1 starting up at ${gftime()}`);
 ptl(`<startup> System: ${os.platform} @ ${os.hostname}, node version: ${process.versions.node}, v8 version: ${process.versions.v8}`);
 
 if(conf.pingsound==="")
-	ptlw(`<warn> pingsound setting is empty in config.js. No sound will be played when you get pinged`);
+	ptlw(chalk.yellow(`<warn> pingsound setting is empty in config.js. No sound will be played when you get pinged`));
 if(conf.giftsound==="")
-	ptlw(`<warn> giftsound setting is empty in config.js. No sound will be played when you get a gift`);
+	ptlw(chalk.yellow(`<warn> giftsound setting is empty in config.js. No sound will be played when you get a gift`));
 if(typeof(conf.restartOnCapError)==="undefined"){
-	ptlw(`<warn> WARNING! Configuration setting restartOnCapError is missing! Please add the option to config. See config.js.example for details.`);
+	ptlw(chalk.yellow(`<warn> WARNING! Configuration setting restartOnCapError is missing! Please add the option to config. See config.js.example for details.`));
 }	
+
 
 const client = new ChatClient({username: conf.username, password: conf.oauth});
 client.on("connecting", onConnecting);
@@ -48,38 +58,38 @@ function onConnecting(){
 	ptl(`<cc> Connecting to TMI`);
 }
 function onConnect(){
-	ptl(`<cc> Connected!`);
+	ptl(chalk.green(`<cc> Connected!`));
 	ptl(`<cc> Logging in...`);
 }
 
 function onReady(){
-	ptl(`<cc> Logged in! Chat module ready.`);
+	ptl(chalk.green(`<cc> Logged in! Chat module ready.`));
 	JoinChannels();
 }
 
 function onClose(){
-	ptlw(`<cc> Connection to TMI was closed.`);
+	ptlw(chalk.yellow(`<cc> Connection to TMI was closed.`));
 }
 function onError(inErr){
-	ptl(`<cc> Chatclient error detected: ${inErr}`);
+	ptl(chalk.redBright(`<cc> Chatclient error detected: ${inErr}`));
 	if (inErr.name==="LoginError"){
-		ptl(`<cc> Login error detected, cannot continue. Terminating application.`);
+		ptl(chalk.redBright(`<cc> Login error detected, cannot continue. Terminating application.`));
 		process.exit(1);
 	}
 	if(inErr.name==="CapabilitiesError"){
 		if(conf.restartOnCapError){
-			ptl(`<cc> Capabilities error detected. Terminating application as per the configuration setting.`);
+			ptl(chalk.redBright(`<cc> Capabilities error detected. Terminating application as per the configuration setting.`));
 			process.exit(1);
 		} else {
-			ptl(`<cc> Capabilities error detected, but not doing anything because the configuration setting says no.`);
-			ptl(`<cc> If the program seems to not do anything/you disappear from chat/messages stop coming it's advised to restart it.`);
+			ptl(chalk.yellow(`<cc> Capabilities error detected, but not doing anything because the configuration setting says no.`));
+			ptl(chalk.yellow(`<cc> If the program seems to not do anything/you disappear from chat/messages stop coming it's advised to restart it.`));
 			return;
 		}
 			
 	}
 	if(inErr.name==="ReconnectError"){
-		ptl(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`);
-		ptl(`<cc> Restarting application as a safety measure`);
+		ptl(chalk.redBright(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`));
+		ptl(chalk.redBright(`<cc> Restarting application as a safety measure`));
 		process.exit(0);
 	}
 }
@@ -87,11 +97,11 @@ function onError(inErr){
 async function onUserNotice(inMsg){
 	if(inMsg.isSubgift() || inMsg.isAnonSubgift()){
 		if (inMsg.eventParams.recipientUsername.toLowerCase() === conf.username.toLowerCase()){
-			ptl(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`);
+			ptl(chalk.magenta(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`));
 			if(conf.giftsound.length>0){
 				try { await player.play({path: conf.giftsound}); }
 				catch(err){
-					ptlw(`<soundplayer> Gift sound playback failed: ${err}`);
+					ptlw(chalk.redBright(`<soundplayer> Gift sound playback failed: ${err}`));
 				}
 			}
 		}
@@ -108,11 +118,11 @@ async function incomingMessage(inMsg){
 	let channel = inMsg.channelName;
 	const rx = new RegExp(conf.username, "i");
 	if(rx.test(message) && sender!=conf.username){
-		ptl(`[${gftime()}] ${sender} pinged you in #${channel}: ${message}`);
+		ptl(chalk.magenta(`[${gftime()}] ${sender} pinged you in #${channel}: ${message}`));
 		if(conf.pingsound.length>0){
 			try { await player.play({path: conf.pingsound}); }
 			catch(err){
-				ptlw(`<soundplayer> Ping sound playback failed: ${err}`);
+				ptlw(chalk.redBright(`<soundplayer> Ping sound playback failed: ${err}`));
 			}
 		}
 	}
@@ -130,11 +140,11 @@ function LoadChannels(inFile){
 		buff = fs.readFileSync(inFile);
 	}
 	catch(err){
-		ptlw(`<error> LoadChannels: unable to read ${inFile}: ${err}`);
+		ptlw(chalk.redBright(`<error> LoadChannels: unable to read ${inFile}: ${err}`));
 		return -1;
 	}
 	if(buff.length<3){
-		ptlw(`<warn> channels.txt is empty or contains no valid channel adata`);
+		ptlw(chalk.yellow(`<warn> channels.txt is empty or contains no valid channel adata`));
 		return -1;
 	}
 	buff = buff.toString();
@@ -178,12 +188,12 @@ async function JoinChannels(){
 			stime = new Date;
 			try { await client.join(c); }
 			catch(err){
-				ptlw(`<error> Error while trying to join ${c}: ${err}`);
+				ptlw(chalk.redBright(`<error> Error while trying to join ${c}: ${err}`));
 				isfailed=1;
 			}
 			finally{
 				if(!isfailed){
-					ptl(`Successfully joined channel ${c}`);
+					ptl(chalk.green(`Successfully joined channel ${c}`));
 					activechannels.push(c);
 					ptime = joinDelay-(new Date - stime);
 					if(ptime>0) await sleep(ptime);
@@ -194,7 +204,7 @@ async function JoinChannels(){
 }
 
 function ReloadChannels(){
-	ptl(`[${gftime()}] Received SIGUSR1, reloading channels`);
+	ptl(chalk.cyan(`[${gftime()}] Received SIGUSR1, reloading channels`));
 	JoinChannels();
 }
 

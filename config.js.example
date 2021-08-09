@@ -5,6 +5,7 @@ exports.trilaud_config = {
 	oauth: "",				//get it from https://twitchapps.com/tmi/
 	pingsound: "",			//sound to play when you get binged if alertOnPings is set to true
 	giftsound: "",			//sound to play when get a gift
+	textcolors: true,		//set it to false to make stdout sparkle
 	restartOnCapError: true	//set it to false to not restart the client on capabilitieserrors
 							//DANGEROUS! only use it if you know what you're doing pajaS
 }
@@ -15,6 +16,8 @@ exports.trilaud_config = {
  * For long Windows paths remember to double the slashes!
  * YES: C:\\sounds\\bing.wav
  * NO: C:\sounds\bing.wav
+ * 
+ * You can use the supplied beepbeep.wav file
  *
  */
  

@@ -1,6 +1,6 @@
 {
   "name": "trilaud",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "twitch emote and gift farmer WideHardo",
   "main": "triLaud.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "trihard"
   ],
   "dependencies": {
+    "chalk": "~4.1.2",
     "dank-twitch-irc": "~4.3.0",
     "date-fns": "~2.19.0",
     "node-wav-player": "git+https://github.com/noiredayz/node-wav-player.git"
