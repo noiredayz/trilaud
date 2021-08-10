@@ -31,6 +31,9 @@ As mentioned before [Twitch limits the rate of how many channels you can join un
 * **2021-08-09** New option: colorful output. New dependency: [chalk](https://github.com/chalk/chalk) Report JoinError's only at one place.
 * **2021-08-09** Started tracking changes FeelsOkayMan. Version 0.0.1 -> 0.1.1
 
+## Contact ##
+You can find me with questions etc. over at http://twitch.tv/noiredayz
+
 ## Acknowledgements ##
 This program was inspired by https://github.com/zneix/trihard-kkona
 
