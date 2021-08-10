@@ -28,7 +28,7 @@ catch(err){
 	ptlw(chalk.red(`<error> Unable to write pid to file: ${err}`));
 }
 
-ptl(`<startup> TriLaud v0.1 starting up at ${gftime()}`);
+ptl(`<startup> TriLaud v0.1.1 starting up at ${gftime()}`);
 ptl(`<startup> System: ${os.platform} @ ${os.hostname}, node version: ${process.versions.node}, v8 version: ${process.versions.v8}`);
 
 if(conf.pingsound==="")
@@ -188,7 +188,8 @@ async function JoinChannels(){
 			stime = new Date;
 			try { await client.join(c); }
 			catch(err){
-				ptlw(chalk.redBright(`<error> Error while trying to join ${c}: ${err}`));
+				//JoinError's are reported by the onError callback, so no need to report errors here
+				//ptlw(chalk.redBright(`<error> Error while trying to join ${c}: ${err}`));
 				isfailed=1;
 			}
 			finally{
