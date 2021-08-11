@@ -1,4 +1,4 @@
 #!/bin/sh
 
-kill -s USR1 `cat pid`
+kill -s USR2 `cat pid`
 

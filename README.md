@@ -4,7 +4,7 @@ Gifted sub farmer for Twitch TriHard :handshake: VisLaud
 * Synchronous channel join, respects the [recently enforced ratelimits](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). Join more than 20 channels without issues.
 * Optional: play a sound when you get a gift
 * Optional: monitor pings (mentions), play a sound in addition if enabled
-* Add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR1
+* Add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR2
 * [Free software](https://www.gnu.org/philosophy/free-sw.html) under the [GNU GPL](https://www.gnu.org/licenses/gpl-3.0.html). Bug reports and feature requests are welcome.
 * Designed for unattended use. Set it up and forget about it (kinda Okayeg)
 * No need to register a dedicated Twitch application for it
@@ -17,7 +17,7 @@ This simple nodejs program joins a bunch of Twitch channels for ya, so you can y
 ## What doesn't this program do ##
 It will not say anything under your name. You are just another name in the viewer list that nobody checks anyway pepeLaugh
 ## Why does it join channels so slow? forsenY ##
-As mentioned before [Twitch limits the rate of how many channels you can join under a given time](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). For non-"verified bot" accounts this is 20 channel joins per 10 seconds. The program joins one channel once per at least 580ms, a safe value (roughly 17 joins per 10 seconds). From my experience with twitch ratelimits it's best to play safe. To reduce the impact of this (as also mentioned) you can add more channels without restarting. Just add the new channels to channels.txt and send SIGUSR1 to the program.
+As mentioned before [Twitch limits the rate of how many channels you can join under a given time](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). For non-"verified bot" accounts this is 20 channel joins per 10 seconds. The program joins one channel once per at least 580ms, a safe value (roughly 17 joins per 10 seconds). From my experience with twitch ratelimits it's best to play safe. To reduce the impact of this (as also mentioned) you can add more channels without restarting. Just add the new channels to channels.txt and send SIGUSR2 to the program.
 ## How to use? FeelsDankMan ##
 1. Download or clone the repo
 2. Copy config.js.example to config.js
@@ -32,7 +32,7 @@ As mentioned before [Twitch limits the rate of how many channels you can join un
 * **2021-08-09** Started tracking changes FeelsOkayMan. Version 0.0.1 -> 0.1.1
 
 ## Contact ##
-You can find me with questions etc. over at http://twitch.tv/noiredayz
+You can find me with questions etc. over at https://twitch.tv/noiredayz
 
 ## Acknowledgements ##
 This program was inspired by https://github.com/zneix/trihard-kkona

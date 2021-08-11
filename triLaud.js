@@ -12,7 +12,7 @@ const joinDelay = 580; //in ms, max 20 joins per 10 seconds.
 let channels = [];
 let activechannels = [];
 
-process.on("SIGUSR1", ReloadChannels);
+process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
 	ptlw(`<warn> Configuration setting textcolors is missing, not colorizing output. If you want colors add it to config and set it to true. See config.js.example for details.`);
 	chalk.level = 0;
@@ -205,7 +205,7 @@ async function JoinChannels(){
 }
 
 function ReloadChannels(){
-	ptl(chalk.cyan(`[${gftime()}] Received SIGUSR1, reloading channels`));
+	ptl(chalk.cyan(`[${gftime()}] Received SIGUSR2S, reloading channels`));
 	JoinChannels();
 }
 
