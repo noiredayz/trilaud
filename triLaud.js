@@ -226,8 +226,12 @@ async function JoinChannels(){
 }
 
 function ReloadChannels(){
-	ptl(chalk.cyan(`[${gftime()}] Received SIGUSR2S, reloading channels`));
-	JoinChannels();
+	if(joinerStatus === 0)
+		ptl(chalk.cyan(`[${gftime()}] Received SIGUSR2S, reloading channels`));
+		JoinChannels();
+	} else {
+		ptl(chalk.yellow(`[${gftime()}] Received SIGUSR2S, but the joiner process is busy. Not reloading channels.`));
+	}
 }
 
 function sleep(ms) {
