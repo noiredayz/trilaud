@@ -4,7 +4,7 @@ Gifted sub farmer for Twitch TriHard :handshake: VisLaud
 * Synchronous channel join, respects the [recently enforced ratelimits](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). Join more than 20 channels without issues.
 * Optional: play a sound when you get a gift
 * Optional: monitor pings (mentions), play a sound in addition if enabled
-* Add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR2
+* Add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR2 or use the integrated web server to send a reload command (Windows users must use the later as Windows doesn't support SIGUSR1-2)
 * [Free software](https://www.gnu.org/philosophy/free-sw.html) under the [GNU GPL](https://www.gnu.org/licenses/gpl-3.0.html). Bug reports and feature requests are welcome.
 * Designed for unattended use. Set it up and forget about it (kinda Okayeg)
 * No need to register a dedicated Twitch application for it
