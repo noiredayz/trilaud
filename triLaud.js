@@ -226,7 +226,7 @@ async function JoinChannels(){
 }
 
 function ReloadChannels(){
-	if(joinerStatus === 0)
+	if(joinerStatus === 0){
 		ptl(chalk.cyan(`[${gftime()}] Received SIGUSR2S, reloading channels`));
 		JoinChannels();
 	} else {
@@ -272,6 +272,18 @@ async function requestHandler(req, res){
 			}	
 			res.end();
 			break;
+		case "/api/reload":
+			res.writeHead(200, {'Content-Type': 'application/json', 'Cache-Control': 'no-cache'});
+			if(joinerStatus != 0){
+				ptl(chalk.yellow(`<http> Reload via API requested, but the joiner process is currently active. Not reloading.`));
+				res.write(JSON.stringify({success: false, status: "already-reloading", msg: "Joiner process is currently busy loading/reloading channels. Please try again later."}));
+			} else {
+				ptl(chalk.cyan(`<http> Reloading channels via APU`));
+				JoinChannels();
+				res.write(JSON.stringify({success: true, status: "reload-cmd-sent", msg: "Reload command successfully issued."}));
+			}	
+			res.end();
+			break;	
 		default:
 			ptlw(chalk.yellow(`<Router> invalid path ${req.url}, sending back 404`));
 			res.writeHead(404, {'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'});
@@ -305,4 +317,3 @@ retval += `<a href="/">Main page</a>
 </body></html>`;
 return retval;	
 }
-
