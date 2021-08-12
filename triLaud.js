@@ -5,12 +5,15 @@ const df = require("date-fns");
 const fs = require("fs");
 const os = require("os");
 const chalk = require("chalk");
+const http = require("http");
 const conf = require("./config.js").trilaud_config;
 const ptl = console.log;
 const ptlw = console.warn;
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
 let channels = [];
 let activechannels = [];
+let server;
+let joinerStatus = 0;
 
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
@@ -37,7 +40,23 @@ if(conf.giftsound==="")
 	ptlw(chalk.yellow(`<warn> giftsound setting is empty in config.js. No sound will be played when you get a gift`));
 if(typeof(conf.restartOnCapError)==="undefined"){
 	ptlw(chalk.yellow(`<warn> WARNING! Configuration setting restartOnCapError is missing! Please add the option to config. See config.js.example for details.`));
-}	
+}
+if(typeof(conf.httpPort)!="number"){
+	ptlw(chalk.yellow(`<warn> httpPort config option is missing or invalid, not starting a http server. Reloading under Windows will not be possible.`));
+	ptlw(chalk.yellow(`<warn> See config.js.example for details of how to add it.`));
+} else {
+	if(conf.httpPort <= 0 || conf.httpPort > 65535){
+		ptlw(chalk.yellow(`<warn> httpPort config option is set to 0 or an invalid number, not starting a web server. Set it to any number 1 through 65535 to start it.`));
+	} else {
+		try{
+			http.createServer(requestHandler).listen(conf.httpPort, 'localhost');
+		}
+		catch(err){
+			ptlw(chalk.redBright(`<err> Unable to start web server at port ${conf.httpPort}: ${err}`));
+			ptlw(chalk.redBright(`<err> Web functions (including reloading under Windows) will not be usable!`));
+		}
+	}
+}
 
 
 const client = new ChatClient({username: conf.username, password: conf.oauth});
@@ -180,6 +199,7 @@ function LoadChannels(inFile){
 }
 
 async function JoinChannels(){
+	joinerStatus = 1;
 	let isfailed=0, stime, ptime;
 	LoadChannels("channels.txt");
 	for(let c of channels){
@@ -202,6 +222,7 @@ async function JoinChannels(){
 			}
 		}
 	}
+	joinerStatus = 0;
 }
 
 function ReloadChannels(){
@@ -222,5 +243,62 @@ function detectLineEndings(inTxt){
 	if(cr === crlf && lf === crlf) return "CRLF";
 	if(cr>lf) return "CR";
 	else return "LF";
+}
+
+async function requestHandler(req, res){
+	ptl(`<http> Incoming request for "${req.url}"`);
+	let inurl = req.url.split("?");
+	switch(inurl[0]){
+		case "/index.htm":
+		case "/index.html":
+		case "/":
+			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.write(genIndexPage());
+			res.end();
+			break;
+		case "/reload":
+			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			if(joinerStatus != 0){
+				ptl(chalk.yellow(`<http> Reload requested, but the joiner process is currently active. Not reloading.`));
+				res.write(getReloadReply(1));
+			} else {
+				ptl(chalk.cyan(`<http> Reloading channels`));
+				JoinChannels();
+				res.write(getReloadReply(0));
+			}	
+			res.end();
+			break;
+		default:
+			ptlw(chalk.yellow(`<Router> invalid path ${req.url}, sending back 404`));
+			res.writeHead(404, {'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'});
+			res.write("404 - Content not found");
+			res.end();
+			break;
+	}
+}
+
+function genIndexPage(){
+return `
+<html>
+<head><title>triLaud@${os.hostname} (${os.platform})</title></head>
+<body>
+<b>Current user: <code>${conf.username}</code></b><br>
+<b>Active channels: <code>${activechannels.length}</code></b><br>
+<a href="reload">Click here to reload channels from channels.txt</a>
+</body></html>`;
+}
+
+function getReloadReply(cStat){
+let retval = `
+<html>
+<head><title>triLaud@${os.hostname} (${os.platform}) - Reloaded</title></head>
+<body>`;
+if(cStat!=1)
+	retval += `<b>Channel reload command issued successfully.<b><br>`;
+else
+	retval += `<b>triLaud is currently busy joining new or the initial set of channels. Please try again later.<b><br>`;
+retval += `<a href="/">Main page</a>
+</body></html>`;
+return retval;	
 }
 

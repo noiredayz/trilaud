@@ -28,6 +28,8 @@ As mentioned before [Twitch limits the rate of how many channels you can join un
 7. Run the program with "node triLaud.js"
 8. optional: Install the pm2 process manager (https://pm2.keymetrics.io/) and run the program with "pm2 triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
 ## Changelog ##
+* **2021-08-12** v0.1.2 - PagMan new option and function: http server. Add the new httpPort variable to config then navigate to http://localhost:*port* for a supa simple page for channel stats and reload option for Winfriends. More stats coming soon!
+* **2021-08-12** v0.1.1 - Changed reload signal for Unix like OS' from USR1 to USR2, as USR1 is reserved (kinda) by node for the debugger and listening to it may cause issues when ran with the debugger.
 * **2021-08-09** New option: colorful output. New dependency: [chalk](https://github.com/chalk/chalk) Report JoinError's only at one place.
 * **2021-08-09** Started tracking changes FeelsOkayMan. Version 0.0.1 -> 0.1.1
 
