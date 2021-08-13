@@ -48,8 +48,13 @@ if(typeof(conf.httpPort)!="number"){
 	if(conf.httpPort <= 0 || conf.httpPort > 65535){
 		ptlw(chalk.yellow(`<warn> httpPort config option is set to 0 or an invalid number, not starting a web server. Set it to any number 1 through 65535 to start it.`));
 	} else {
+		let thost;
+		if(!conf.httpHost)
+			thost="localhost";
+		else
+			thost=conf.httpHost;
 		try{
-			http.createServer(requestHandler).listen(conf.httpPort, 'localhost');
+			http.createServer(requestHandler).listen(conf.httpPort, thost);
 		}
 		catch(err){
 			ptlw(chalk.redBright(`<err> Unable to start web server at port ${conf.httpPort}: ${err}`));

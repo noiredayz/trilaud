@@ -7,6 +7,7 @@ exports.trilaud_config = {
 	giftsound: "",			//sound to play when get a gift
 	textcolors: true,		//set it to false to make stdout sparkle
 	httpPort: 8500,			//set it to 0 to disable the http server.
+	httpHost: "localhost",+
 	restartOnCapError: true	//set it to false to not restart the client on capabilitieserrors
 							//DANGEROUS! only use it if you know what you're doing pajaS
 }
