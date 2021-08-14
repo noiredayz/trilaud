@@ -28,6 +28,7 @@ As mentioned before [Twitch limits the rate of how many channels you can join un
 7. Run the program with "node triLaud.js"
 8. optional: Install the pm2 process manager (https://pm2.keymetrics.io/) and run the program with "pm2 triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
 ## Changelog ##
+* **2021-08-14** Now counts gifts detected per session, added stats to web interface. Added high quality OC favicon.
 * **2021-08-13** Added httpHost variable so integrated server can listen on network.
 * **2021-08-12** Added a JSON endpoint (/api/reload) to http server, because we need JSON API in gifted sub farmer NaM
 * **2021-08-12** v0.1.2 - PagMan new option and function: http server. Add the new httpPort variable to config then navigate to http://localhost:*port* for a supa simple page for channel stats and reload option for Winfriends. More stats coming soon!

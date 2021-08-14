@@ -14,6 +14,7 @@ let channels = [];
 let activechannels = [];
 let server;
 let joinerStatus = 0;
+let counters = {anon: 0, self: 0, normal: 0};
 
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
@@ -122,6 +123,7 @@ async function onUserNotice(inMsg){
 	if(inMsg.isSubgift() || inMsg.isAnonSubgift()){
 		if (inMsg.eventParams.recipientUsername.toLowerCase() === conf.username.toLowerCase()){
 			ptl(chalk.magenta(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`));
+			counters.self++;
 			if(conf.giftsound.length>0){
 				try { await player.play({path: conf.giftsound}); }
 				catch(err){
@@ -131,6 +133,10 @@ async function onUserNotice(inMsg){
 		}
 		else {
 			ptl(`[${gftime()}] ${inMsg.displayName || 'An anonymous gifter'} gifted a sub to ${inMsg.eventParams.recipientUsername} in #${inMsg.channelName}`);
+			if(inMsg.displayName)
+				counters.normal++;
+			else
+				counters.anon++;
 		}
 	}
 }
@@ -288,7 +294,25 @@ async function requestHandler(req, res){
 				res.write(JSON.stringify({success: true, status: "reload-cmd-sent", msg: "Reload command successfully issued."}));
 			}	
 			res.end();
-			break;	
+			break;
+		case "/favicon.ico":
+			let icon=undefined;
+			try {
+				icon = fs.readFileSync("./favicon.ico");
+			}
+			catch(err){
+				ptlw(chalk.yellow("<http> Cannot read favicon, sending back 404"));
+			}
+			if(icon){
+				res.writeHead(200, {'Content-Type': 'image/vnd.microsoft.icon'});
+				res.write(icon);
+				res.end();
+			} else {
+				res.writeHead(404, {'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'});
+				res.write("404 - Content not found");
+				res.end();
+			}
+			break;
 		default:
 			ptlw(chalk.yellow(`<Router> invalid path ${req.url}, sending back 404`));
 			res.writeHead(404, {'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'});
@@ -305,6 +329,10 @@ return `
 <body>
 <b>Current user: <code>${conf.username}</code></b><br>
 <b>Active channels: <code>${activechannels.length}</code></b><br>
+<b>Gifts you received: ${counters.self}</b><br>
+<b>Anonymous gifts to others: ${counters.anon}</b><br>
+<b>Non-anon gifts to to others: ${counters.normal}</b><br>
+<b>Total gifts during this session: ${counters.anon+counters.normal+counters.self}</b><br>
 <a href="reload">Click here to reload channels from channels.txt</a>
 </body></html>`;
 }
