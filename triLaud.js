@@ -133,10 +133,10 @@ async function onUserNotice(inMsg){
 		}
 		else {
 			ptl(`[${gftime()}] ${inMsg.displayName || 'An anonymous gifter'} gifted a sub to ${inMsg.eventParams.recipientUsername} in #${inMsg.channelName}`);
-			if(inMsg.displayName)
-				counters.normal++;
-			else
+			if(inMsg.isAnonSubgift())
 				counters.anon++;
+			else
+				counters.normal++;
 		}
 	}
 }
