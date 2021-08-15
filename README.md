@@ -32,7 +32,7 @@ Just add the new channels to channels.txt and send SIGUSR2 to the program or use
 7. Run the program with "node triLaud.js"
 8. optional: Install the pm2 process manager (https://pm2.keymetrics.io/) and run the program with "pm2 triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
 9. On updates: check the console or config.js.example for added new options that require setup
-## http interface##
+## http interface ##
 triLaud has an integrated web server (nodejs http server base, no additional bloat) for stats and reload option for Windows users. 
 If you don't need/don't want this functionality set http port to 0 in the config (or remove the setting).
 
@@ -40,6 +40,7 @@ Endpoints:
 * / : stats in html
 * / : issue a reload command, reply in html
 * /api/reload : issue a realod command, reply in JSON
+
 Planned:
 * /api/stats : stats in JSON
 
