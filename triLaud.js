@@ -300,7 +300,7 @@ async function requestHandler(req, res){
 		case "/stats":
 		case "/stats/":
 			res.writeHead(200, {'Content-Type': 'text/html'});
-			res.write(`<html><head><title>triLaud stats</title></head>\n<body><a href="stats/channel">Channel stats</a> <a href="stats/oilers">Top oilers</a>\n</body></html>`);
+			res.write(`<html><head><title>triLaud stats</title></head>\n<body><a href="stats/channel">Channel stats</a> <a href="stats/oilers">Gifter stats</a>\n</body></html>`);
 			res.end();
 			break;
 		case "/stats/channel":
@@ -363,7 +363,7 @@ return `
 <b>Anonymous gifts to others: ${counters.anon}</b><br>
 <b>Non-anon gifts to to others: ${counters.normal}</b><br>
 <b>Total gifts during this session: ${counters.anon+counters.normal+counters.self}</b><br>
-<a href="stats/channel">Channel stats</a> <a href="stats/oilers">Top oilers</a><br><br>
+<a href="stats/channel">Channel stats</a> <a href="stats/oilers">Gifter stats</a><br><br>
 <a href="reload">Click here to reload channels from channels.txt</a>
 </body></html>`;
 }
@@ -375,7 +375,8 @@ function genChannelStats(){
 		return retval;
 	} else {
 		retval += `<table style="border-collapse: collapse;">\n<tr><td>Channel name</td><td>Gifts count<br>(in this session)</td></tr>\n`;
-		for(const c of chgifts){
+		let orderedgifts = chgifts.sort((a, b) => b.amount-a.amount);
+		for(const c of orderedgifts){
 			retval += `<tr><td>${c.name}</td><td>${c.amount}</td></tr>\n`;
 		}
 		retval += `</table></body></html>`;
@@ -390,7 +391,8 @@ function genGifterStats(){
 		return retval;
 	} else {
 		retval += `<table style="border-collapse: collapse;">\n<tr><td>Gifter's name</td><td>Gift count<br>(across all active channels)</td></tr>\n`;
-		for(const c of oilers){
+		let orderedgifts = oilers.sort((a, b) => b.amount-a.amount);
+		for(const c of orderedgifts){
 			retval += `<tr><td>${c.name}</td><td>${c.amount}</td></tr>\n`;
 		}
 		retval += `</table></body></html>`;
