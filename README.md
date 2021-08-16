@@ -45,6 +45,7 @@ Planned:
 * /api/stats : stats in JSON
 
 ## Changelog ##
+* **2021-08-16** Added donk stats pages (WIP, planned features: better looks, options to order then)
 * **2021-08-14** Now counts gifts detected per session, added stats to web interface. Added high quality OC favicon.
 * **2021-08-13** Added httpHost variable so integrated server can listen on network.
 * **2021-08-12** Added a JSON endpoint (/api/reload) to http server, because we need JSON API in gifted sub farmer NaM

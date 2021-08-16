@@ -10,9 +10,7 @@ const conf = require("./config.js").trilaud_config;
 const ptl = console.log;
 const ptlw = console.warn;
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
-let channels = [];
-let activechannels = [];
-let server;
+let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
 let counters = {anon: 0, self: 0, normal: 0};
 
@@ -138,6 +136,7 @@ async function onUserNotice(inMsg){
 			else
 				counters.normal++;
 		}
+		registerGift(inMsg.channelName, inMsg.displayName);
 	}
 }
 
@@ -260,6 +259,21 @@ function detectLineEndings(inTxt){
 	else return "LF";
 }
 
+function registerGift(inch, unick){
+	let i = chgifts.findIndex(c => c.name === inch);
+	if(i===-1){
+		chgifts.push({name: inch, amount: 1});
+	} else {
+		chgifts[i].amount++;
+	}
+	i = oilers.findIndex(o => o.name === unick);
+	if(i===-1){
+		oilers.push({name: unick, amount: 1});
+	} else {
+		oilers[i].amount++;
+	}
+}
+
 async function requestHandler(req, res){
 	ptl(`<http> Incoming request for "${req.url}"`);
 	let inurl = req.url.split("?");
@@ -281,6 +295,22 @@ async function requestHandler(req, res){
 				JoinChannels();
 				res.write(getReloadReply(0));
 			}	
+			res.end();
+			break;
+		case "/stats":
+		case "/stats/":
+			res.writeHead(200, {'Content-Type': 'text/html'});
+			res.write(`<html><head><title>triLaud stats</title></head>\n<body><a href="stats/channel">Channel stats</a> <a href="stats/oilers">Top oilers</a>\n</body></html>`);
+			res.end();
+			break;
+		case "/stats/channel":
+			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.write(genChannelStats());
+			res.end();
+			break;
+		case "/stats/oilers":
+			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.write(genGifterStats());
 			res.end();
 			break;
 		case "/api/reload":
@@ -333,8 +363,39 @@ return `
 <b>Anonymous gifts to others: ${counters.anon}</b><br>
 <b>Non-anon gifts to to others: ${counters.normal}</b><br>
 <b>Total gifts during this session: ${counters.anon+counters.normal+counters.self}</b><br>
+<a href="stats/channel">Channel stats</a> <a href="stats/oilers">Top oilers</a><br><br>
 <a href="reload">Click here to reload channels from channels.txt</a>
 </body></html>`;
+}
+
+function genChannelStats(){
+	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Channel statistics</title></head>\n<body>\n`;
+	if(chgifts.length===0){
+		retval+=`No gifts so far PepeHands</body></html>`;
+		return retval;
+	} else {
+		retval += `<table style="border-collapse: collapse;">\n<tr><td>Channel name</td><td>Gifts count<br>(in this session)</td></tr>\n`;
+		for(const c of chgifts){
+			retval += `<tr><td>${c.name}</td><td>${c.amount}</td></tr>\n`;
+		}
+		retval += `</table></body></html>`;
+		return retval;
+	}
+}
+
+function genGifterStats(){
+	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title></head>\n<body>\n`;
+	if(oilers.length===0){
+		retval+=`No gifts so far PepeHands</body></html>`;
+		return retval;
+	} else {
+		retval += `<table style="border-collapse: collapse;">\n<tr><td>Gifter's name</td><td>Gift count<br>(across all active channels)</td></tr>\n`;
+		for(const c of oilers){
+			retval += `<tr><td>${c.name}</td><td>${c.amount}</td></tr>\n`;
+		}
+		retval += `</table></body></html>`;
+		return retval;
+	}
 }
 
 function getReloadReply(cStat){
