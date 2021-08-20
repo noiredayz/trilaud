@@ -23,7 +23,8 @@ From my experience with twitch ratelimits it's best to play safe. To reduce the 
 Just add the new channels to channels.txt and send SIGUSR2 to the program or use the web interface to start a reload.
 
 ## How to use? FeelsDankMan ##
-1. Download or clone the repo **As the program is under constant, daily development I suggest you clone and update it regularly**
+0. Install git. Linux and BSD users can use their distros' package manager. Windows users can get it from [here](https://gitforwindows.org/) or get it from [Chocolatey](https://community.chocolatey.org/packages/git) 
+1. Download or clone the repo **As the program is under constant, daily development I suggest you clone it using git and update it regularly**
 2. Copy config.js.example to config.js
 3. Open config.js in a text editor and fill out the config. Instruction are inside
 4. create a file called "channels.txt" and fill it with channels you want to be in, one channel per line. Empty and too short lines are ignored
