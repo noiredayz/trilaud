@@ -10,6 +10,7 @@ const conf = require("./config.js").trilaud_config;
 const ptl = console.log;
 const ptlw = console.warn;
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
+const tableCSS = `<style>table {border-collapse: collapse; border: 2px solid black;} tr {border: 2px solid black;} td {border: 1px solid black;}</style>`;
 let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
 let counters = {anon: 0, self: 0, normal: 0};
@@ -369,12 +370,12 @@ return `
 }
 
 function genChannelStats(){
-	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Channel statistics</title></head>\n<body>\n`;
+	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Channel statistics</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(chgifts.length===0){
 		retval+=`No gifts so far PepeHands</body></html>`;
 		return retval;
 	} else {
-		retval += `<table style="border-collapse: collapse;">\n<tr><td>Channel name</td><td>Gifts count<br>(in this session)</td></tr>\n`;
+		retval += `<table style="border-collapse: collapse; border: 1px solid black">\n<tr><td>Channel name</td><td>Gifts count<br>(in this session)</td></tr>\n`;
 		let orderedgifts = chgifts.sort((a, b) => b.amount-a.amount);
 		for(const c of orderedgifts){
 			retval += `<tr><td>${c.name}</td><td>${c.amount}</td></tr>\n`;
@@ -385,12 +386,12 @@ function genChannelStats(){
 }
 
 function genGifterStats(){
-	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title></head>\n<body>\n`;
+	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(oilers.length===0){
 		retval+=`No gifts so far PepeHands</body></html>`;
 		return retval;
 	} else {
-		retval += `<table style="border-collapse: collapse;">\n<tr><td>Gifter's name</td><td>Gift count<br>(across all active channels)</td></tr>\n`;
+		retval += `<table>\n<tr><td>Gifter's name</td><td>Gift count<br>(across all active channels)</td></tr>\n`;
 		let orderedgifts = oilers.sort((a, b) => b.amount-a.amount);
 		for(const c of orderedgifts){
 			retval += `<tr><td>${c.name}</td><td>${c.amount}</td></tr>\n`;
