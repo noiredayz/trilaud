@@ -282,12 +282,12 @@ async function requestHandler(req, res){
 		case "/index.htm":
 		case "/index.html":
 		case "/":
-			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			res.write(genIndexPage());
 			res.end();
 			break;
 		case "/reload":
-			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			if(joinerStatus != 0){
 				ptl(chalk.yellow(`<http> Reload requested, but the joiner process is currently active. Not reloading.`));
 				res.write(getReloadReply(1));
@@ -300,22 +300,22 @@ async function requestHandler(req, res){
 			break;
 		case "/stats":
 		case "/stats/":
-			res.writeHead(200, {'Content-Type': 'text/html'});
+			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
 			res.write(`<html><head><title>triLaud stats</title></head>\n<body><a href="stats/channel">Channel stats</a> <a href="stats/oilers">Gifter stats</a>\n</body></html>`);
 			res.end();
 			break;
 		case "/stats/channel":
-			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			res.write(genChannelStats());
 			res.end();
 			break;
 		case "/stats/oilers":
-			res.writeHead(200, {'Content-Type': 'text/html', 'Cache-Control': 'no-cache'});
+			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			res.write(genGifterStats());
 			res.end();
 			break;
 		case "/api/reload":
-			res.writeHead(200, {'Content-Type': 'application/json', 'Cache-Control': 'no-cache'});
+			res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
 			if(joinerStatus != 0){
 				ptl(chalk.yellow(`<http> Reload via API requested, but the joiner process is currently active. Not reloading.`));
 				res.write(JSON.stringify({success: false, status: "already-reloading", msg: "Joiner process is currently busy loading/reloading channels. Please try again later."}));
@@ -339,7 +339,7 @@ async function requestHandler(req, res){
 				res.write(icon);
 				res.end();
 			} else {
-				res.writeHead(404, {'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'});
+				res.writeHead(404, {'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache'});
 				res.write("404 - Content not found");
 				res.end();
 			}
