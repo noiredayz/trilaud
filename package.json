@@ -1,10 +1,10 @@
 {
   "name": "trilaud",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "twitch emote and gift farmer WideHardo",
   "main": "triLaud.js",
   "scripts": {
-    "test": "return \"no test saj\""
+    "test": "echo no test saj"
   },
   "repository": {
     "type": "git",
