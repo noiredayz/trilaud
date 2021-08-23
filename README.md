@@ -11,6 +11,7 @@ Gifted sub farmer for Twitch TriHard :handshake: VisLaud
 * Should run just fine on Windows, OSX and GNU/Linux. On Free and Dragonfly BSD you'll need the alsa utils compatibility package to hear sounds
 * Shoult run on other platforms supported by node.js, but without sound playback for now.
 * No architecture specifc code I know of. You can run it on your Raspberry PI 24/7! (this is how I use it akshually 🤓)
+* Easy way to run multiple instances so you can farm on your alts WidestHard . o O ( vadiFun ALTS? )
 
 ## What does this do? ##
 This simple nodejs program joins a bunch of Twitch channels for ya, so you can yoink gifted subs and event emotes WideHardo
@@ -41,11 +42,20 @@ Endpoints:
 * / : stats in html
 * / : issue a reload command, reply in html
 * /api/reload : issue a realod command, reply in JSON
+* /stats/channel : Channel stats (how many gifts per channel)
+* /stats/oilers : Individual gifter stats (anons are grouped into one)
 
 Planned:
 * /api/stats : stats in JSON
 
+## Running multiple instances ##
+1. Create a directory in the programs main dir
+2. Put a config.js and channels.txt inside that dir. Make sure you set up different credentials and if you use http a different port set a different one
+3. start the program with the parameters **-d [cfgdir]** 
+4. A pid file you can use to send a SIGUSR2 to the new process will be created inside that directory
+
 ## Changelog ##
+* **2021-08-23** Added support for running multiple instances
 * **2021-08-16** Added donk stats pages (WIP, planned features: better looks, options to order then)
 * **2021-08-14** Now counts gifts detected per session, added stats to web interface. Added high quality OC favicon.
 * **2021-08-13** Added httpHost variable so integrated server can listen on network.

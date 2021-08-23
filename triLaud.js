@@ -6,7 +6,8 @@ const fs = require("fs");
 const os = require("os");
 const chalk = require("chalk");
 const http = require("http");
-const conf = require("./config.js").trilaud_config;
+let conf;
+let twd="./";
 const ptl = console.log;
 const ptlw = console.warn;
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
@@ -14,6 +15,8 @@ const tableCSS = `<style>table {border-collapse: collapse; border: 2px solid bla
 let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
 let counters = {anon: 0, self: 0, normal: 0};
+
+LoadConf();
 
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
@@ -25,7 +28,7 @@ if(typeof(conf.textcolors)==="undefined"){
 }
 
 try{
-	fs.writeFileSync("./pid", process.pid);
+	fs.writeFileSync(twd+"pid", process.pid);
 }
 catch(err){
 	ptlw(chalk.red(`<error> Unable to write pid to file: ${err}`));
@@ -212,7 +215,7 @@ function LoadChannels(inFile){
 async function JoinChannels(){
 	joinerStatus = 1;
 	let isfailed=0, stime, ptime;
-	LoadChannels("channels.txt");
+	LoadChannels(twd+"/channels.txt");
 	for(let c of channels){
 		if(activechannels.findIndex(ac => ac === c)===-1){
 			isfailed = 0;
@@ -273,6 +276,22 @@ function registerGift(inch, unick){
 	} else {
 		oilers[i].amount++;
 	}
+}
+
+function LoadConf(){
+	let i;
+	i = process.argv.findIndex(a => a==="-d");
+	if(i===-1){	
+		conf = require("./config.js").trilaud_config;
+		return;
+	}
+	if(!process.argv[i+1]){
+		ptl(`Usage: node triLaud.js -d [config file dir]`);
+		process.exit(0);
+	}
+	conf = require("./"+process.argv[i+1]+"/config.js").trilaud_config;
+	twd="./"+process.argv[i+1]+"/";
+	return;
 }
 
 async function requestHandler(req, res){
@@ -356,7 +375,7 @@ async function requestHandler(req, res){
 function genIndexPage(){
 return `
 <html>
-<head><title>triLaud@${os.hostname} (${os.platform})</title></head>
+<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform})</title></head>
 <body>
 <b>Current user: <code>${conf.username}</code></b><br>
 <b>Active channels: <code>${activechannels.length}</code></b><br>
@@ -370,7 +389,7 @@ return `
 }
 
 function genChannelStats(){
-	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Channel statistics</title>\n${tableCSS}\n</head>\n<body>\n`;
+	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Channel statistics</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(chgifts.length===0){
 		retval+=`No gifts so far PepeHands</body></html>`;
 		return retval;
@@ -386,7 +405,7 @@ function genChannelStats(){
 }
 
 function genGifterStats(){
-	let retval=`<html>\n<head><title>triLaud@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
+	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(oilers.length===0){
 		retval+=`No gifts so far PepeHands</body></html>`;
 		return retval;
