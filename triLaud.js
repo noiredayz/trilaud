@@ -28,7 +28,7 @@ if(typeof(conf.textcolors)==="undefined"){
 }
 
 try{
-	fs.writeFileSync(twd+"pid", process.pid);
+	fs.writeFileSync(twd+"pid", process.pid.toString());
 }
 catch(err){
 	ptlw(chalk.red(`<error> Unable to write pid to file: ${err}`));
