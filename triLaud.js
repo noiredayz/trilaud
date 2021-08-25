@@ -34,7 +34,7 @@ catch(err){
 	ptlw(chalk.red(`<error> Unable to write pid to file: ${err}`));
 }
 
-ptl(`<startup> TriLaud v0.1.1 starting up at ${gftime()}`);
+ptl(`<startup> TriLaud v0.1.3 starting up at ${gftime()}`);
 ptl(`<startup> System: ${os.platform} @ ${os.hostname}, node version: ${process.versions.node}, v8 version: ${process.versions.v8}`);
 
 if(conf.pingsound==="")
