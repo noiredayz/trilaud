@@ -328,11 +328,21 @@ async function requestHandler(req, res){
 			res.write(genChannelStats());
 			res.end();
 			break;
+		case "/stats/channel/json":
+			res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
+			res.write(getChannelStatsJSON());
+			res.end();
+			break;
 		case "/stats/oilers":
 			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			res.write(genGifterStats());
 			res.end();
 			break;
+		case "/stats/oilers/json":
+			res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
+			res.write(genGifterStatsJSON());
+			res.end();
+			break;	
 		case "/api/reload":
 			res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
 			if(joinerStatus != 0){
@@ -404,6 +414,15 @@ function genChannelStats(){
 	}
 }
 
+function getChannelStatsJSON(){
+	let orderedgifts = chgifts.sort((a, b) => b.amount-a.amount);
+	let retval = [];
+	for(const c of orderedgifts){
+		retval.push({name: c.name, total: c.amount});
+	}
+	return JSON.stringify(retval);
+}
+
 function genGifterStats(){
 	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(oilers.length===0){
@@ -419,6 +438,16 @@ function genGifterStats(){
 		return retval;
 	}
 }
+
+function genGifterStatsJSON(){
+	let orderedgifts = oilers.sort((a, b) => b.amount-a.amount);
+	let retval = [];
+	for(const c of orderedgifts){
+		retval.push({name: c.name, total: c.amount});
+	}
+	return JSON.stringify(retval);
+}
+
 
 function getReloadReply(cStat){
 let retval = `
