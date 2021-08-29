@@ -10,7 +10,7 @@ Gifted sub farmer for Twitch TriHard :handshake: VisLaud
 * No need to register a dedicated Twitch application for it
 * Should run just fine on Windows, OSX and GNU/Linux. On Free and Dragonfly BSD you'll need the alsa utils compatibility package to hear sounds
 * Shoult run on other platforms supported by node.js, but without sound playback for now.
-* No architecture specifc code I know of. You can run it on your Raspberry PI 24/7! (this is how I use it akshually 🤓)
+* No architecture specifc code I know of. You can run it on your Raspberry PI 24/7! (this is how I use it akshually 🤓) Some people told me they run it from termux from their old Android phones. Farm subs and reduce e-waste today.
 * Easy way to run multiple instances so you can farm on your alts WidestHard . o O ( vadiFun ALTS? )
 
 ## What does this do? ##
@@ -24,7 +24,7 @@ From my experience with twitch ratelimits it's best to play safe. To reduce the 
 Just add the new channels to channels.txt and send SIGUSR2 to the program or use the web interface to start a reload.
 
 ## How to use? FeelsDankMan ##
-0. Install git. Linux and BSD users can use their distros' package manager. Windows users can get it from [here](https://gitforwindows.org/) or get it from [Chocolatey](https://community.chocolatey.org/packages/git) 
+0. Recommended: install git. Linux and BSD users can use their distros' package manager. Windows users can get it from [here](https://gitforwindows.org/) or get it from [Chocolatey](https://community.chocolatey.org/packages/git) 
 1. Download or clone the repo **As the program is under constant, daily development I suggest you clone it using git and update it regularly**
 2. Copy config.js.example to config.js
 3. Open config.js in a text editor and fill out the config. Instruction are inside
@@ -35,15 +35,15 @@ Just add the new channels to channels.txt and send SIGUSR2 to the program or use
 8. optional: Install the pm2 process manager (https://pm2.keymetrics.io/) and run the program with "pm2 start triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
 9. On updates: check the console or config.js.example for added new options that require setup
 ## http interface ##
-triLaud has an integrated web server (nodejs http server base, no additional bloat) for stats and reload option for Windows users. 
+triLaud has an integrated web server (nodejs http server based, no additional bloat) for stats and reload option for Windows users. 
 If you don't need/don't want this functionality set http port to 0 in the config (or remove the setting).
 
 Endpoints:
 * / : stats in html
-* / : issue a reload command, reply in html
-* /api/reload : issue a realod command, reply in JSON
-* /stats/channel : Channel stats (how many gifts per channel)
-* /stats/oilers : Individual gifter stats (anons are grouped into one)
+* /reload : issue a reload command, reply in html
+* /api/reload : issue a reload command, reply in JSON
+* /stats/channel : Channel stats in html (how many gifts per channel)
+* /stats/oilers : Individual gifter stats in html (anons are grouped into one)
 
 Planned:
 * /api/stats : stats in JSON
