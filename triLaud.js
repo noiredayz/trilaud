@@ -167,6 +167,11 @@ function gftime(){
 	return df.format(new Date, "yyyy-MM-dd HH:mm:ss");
 }
 
+function memusage(){
+	let gg = Number(process.memoryUsage().rss)/1024/1024;
+	return `${gg.toFixed(2)}MiB`;
+}
+
 function LoadChannels(inFile){
 	let buff, inch, le, rv=0;
 	try{
@@ -389,6 +394,7 @@ return `
 <body>
 <b>Current user: <code>${conf.username}</code></b><br>
 <b>Active channels: <code>${activechannels.length}</code></b><br>
+<b>Process memory usage: <code>${memusage()}</code></b><br>
 <b>Gifts you received: ${counters.self}</b><br>
 <b>Anonymous gifts to others: ${counters.anon}</b><br>
 <b>Non-anon gifts to to others: ${counters.normal}</b><br>
