@@ -43,7 +43,9 @@ Endpoints:
 * /reload : issue a reload command, reply in html
 * /api/reload : issue a reload command, reply in JSON
 * /stats/channel : Channel stats in html (how many gifts per channel)
+* /stats/channel/json: Channel stats in json
 * /stats/oilers : Individual gifter stats in html (anons are grouped into one)
+* /stats/oilers/json: Individual gifter stats in json (anons are grouped into one)
 
 Planned:
 * /api/stats : stats in JSON
