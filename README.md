@@ -57,6 +57,7 @@ Planned:
 4. A pid file you can use to send a SIGUSR2 to the new process will be created inside that directory
 
 ## Changelog ##
+* **2021-09-14** Added another JSON endpoint for general stats
 * **2021-08-29** Added JSON endpoints for statistics pages.
 * **2021-08-25** Fixed an issue where pidfile writing threw a TypeError on node 14+
 * **2021-08-23** Added support for running multiple instances

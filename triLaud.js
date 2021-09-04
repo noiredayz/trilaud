@@ -1,17 +1,16 @@
 "use strict";
 const { ChatClient } = require("dank-twitch-irc");
 const player = require("node-wav-player");
-const df = require("date-fns");
 const fs = require("fs");
 const os = require("os");
 const chalk = require("chalk");
 const http = require("http");
+const { tableCSS, detectLineEndings, gftime, memusage, sleep } = require("./util.js");
 let conf;
 let twd="./";
 const ptl = console.log;
 const ptlw = console.warn;
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
-const tableCSS = `<style>table {border-collapse: collapse; border: 2px solid black;} tr {border: 2px solid black;} td {border: 1px solid black;}</style>`;
 let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
 let counters = {anon: 0, self: 0, normal: 0};
@@ -163,15 +162,6 @@ async function incomingMessage(inMsg){
 
 client.connect();
 
-function gftime(){
-	return df.format(new Date, "yyyy-MM-dd HH:mm:ss");
-}
-
-function memusage(){
-	let gg = Number(process.memoryUsage().rss)/1024/1024;
-	return `${gg.toFixed(2)}MiB`;
-}
-
 function LoadChannels(inFile){
 	let buff, inch, le, rv=0;
 	try{
@@ -253,20 +243,6 @@ function ReloadChannels(){
 	}
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function detectLineEndings(inTxt){
-	const cr	= inTxt.split("\r").length;
-	const lf	= inTxt.split("\n").length;
-	const crlf	= inTxt.split("\r\n").length;
-	
-	if(cr+lf===0) return "NONE";
-	if(cr === crlf && lf === crlf) return "CRLF";
-	if(cr>lf) return "CR";
-	else return "LF";
-}
 
 function registerGift(inch, unick){
 	let i = chgifts.findIndex(c => c.name === inch);
@@ -328,6 +304,11 @@ async function requestHandler(req, res){
 			res.write(`<html><head><title>triLaud stats</title></head>\n<body><a href="stats/channel">Channel stats</a> <a href="stats/oilers">Gifter stats</a>\n</body></html>`);
 			res.end();
 			break;
+		case "/stats/json":
+			res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
+			res.write(genStatsJson());
+			res.end();
+			break;	
 		case "/stats/channel":
 			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			res.write(genChannelStats());
@@ -390,7 +371,7 @@ async function requestHandler(req, res){
 function genIndexPage(){
 return `
 <html>
-<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform})</title></head>
+<head><title>triLaud - ${conf.username}@${os.hostname()} (${os.platform()})</title></head>
 <body>
 <b>Current user: <code>${conf.username}</code></b><br>
 <b>Active channels: <code>${activechannels.length}</code></b><br>
@@ -402,6 +383,22 @@ return `
 <a href="stats/channel">Channel stats</a> <a href="stats/oilers">Gifter stats</a><br><br>
 <a href="reload">Click here to reload channels from channels.txt</a>
 </body></html>`;
+}
+
+function genStatsJson(){
+	let retval = {
+		host: os.hostname(),
+		platform: os.platform(),
+		username: conf.username,
+		chActive: activechannels.length,
+		memusage: process.memoryUsage().rss,
+		gifts: {
+			self: counters.self,
+			anon: counters.anon,
+			other: counters.normal
+		},
+		reloadRunning: joinerStatus!=0 };
+	return JSON.stringify(retval);	
 }
 
 function genChannelStats(){
