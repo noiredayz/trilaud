@@ -359,9 +359,19 @@ async function requestHandler(req, res){
 				res.end();
 			}
 			break;
+		case "/teapot":
+		case "/teapot/":
+			res.writeHead(418, {'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache'});
+			res.write("🆗 🥚 🍵 ⏲ ");
+			res.end();
+			break;
+		case "/teapot/json":
+			res.writeHead(418, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
+			res.write(JSON.stringify({success: false, status: "teapot", message: "🆗 🥚 🍵 ⏲ "}));
+			res.end();
+			break;
 		default:
-			ptlw(chalk.yellow(`<Router> invalid path ${req.url}, sending back 404`));
-			res.writeHead(404, {'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'});
+			res.writeHead(418, {'Content-Type': 'te', 'Cache-Control': 'no-cache'});
 			res.write("404 - Content not found");
 			res.end();
 			break;
