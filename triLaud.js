@@ -262,15 +262,29 @@ function registerGift(inch, unick){
 function LoadConf(){
 	let i;
 	i = process.argv.findIndex(a => a==="-d");
-	if(i===-1){	
+	if(i===-1){
+		try {	
 		conf = require("./config.js").trilaud_config;
+		}
+		catch(err){
+			ptl("The configuration file config.js is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+			ptl(err);
+			process.exit(1);
+		}
 		return;
 	}
 	if(!process.argv[i+1]){
 		ptl(`Usage: node triLaud.js -d [config file dir]`);
 		process.exit(0);
 	}
-	conf = require("./"+process.argv[i+1]+"/config.js").trilaud_config;
+	try{
+		conf = require("./"+process.argv[i+1]+"/config.js").trilaud_config;
+	}
+	catch(err){
+		ptl("The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+		ptl(err);
+		process.exit(1);
+	}	
 	twd="./"+process.argv[i+1]+"/";
 	return;
 }
