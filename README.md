@@ -1,5 +1,11 @@
 # trilaud
 Gifted sub farmer for Twitch TriHard :handshake: VisLaud
+
+## TrollDespair this was it wasn't it ##
+I'm getting multiple reports that this method of yoinking gift subs no longer works. It was fune while it lasted lads and lasses. WeirdChamp @the one who snitched
+
+I'll keep developing this (now probably useless) program, as it's a good programming excercise.
+
 ## Features ##
 * Synchronous channel join, respects the [recently enforced ratelimits](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). Join more than 20 channels without issues.
 * Optional: play a sound when you get a gift
@@ -38,23 +44,32 @@ Just add the new channels to channels.txt and send SIGUSR2 to the program or use
 triLaud has an integrated web server (nodejs http server based, no additional bloat) for stats and reload option for Windows users. 
 If you don't need/don't want this functionality set http port to 0 in the config (or remove the setting).
 
-Endpoints:
+HTML Endpoints (for humans like us):
 * / : stats in html
 * /reload : issue a reload command, reply in html
-* /api/reload : issue a reload command, reply in JSON
 * /stats/channel : Channel stats in html (how many gifts per channel)
-* /stats/channel/json: Channel stats in json
 * /stats/oilers : Individual gifter stats in html (anons are grouped into one)
+* /teapot: Okayga TeaTime
+
+
+JSON Endpoints (for machines, not for us humans):
+* /api/reload : issue a reload command, reply in JSON
+* /stats/json: basic stats in json (mem usage is in bytes. Rest speaks for themselves)
+* /stats/channel/json: Channel stats in json
 * /stats/oilers/json: Individual gifter stats in json (anons are grouped into one)
+* /teapot/json: Okayga TeaTime (in JSON, robots like tea too)
 
 Planned:
-* /api/stats : stats in JSON
+* /addchannel: add new channel(s) from a HTML form
+* /api/addchannel: add new channel(s) using POST
 
 ## Running multiple instances ##
-1. Create a directory in the programs main dir
+1. Create a directory in the programs main dir. The subdirectory "alts" will be ignored by git, I suggest creating alts' directories there
 2. Put a config.js and channels.txt inside that dir. Make sure you set up different credentials and if you use http a different port set a different one
 3. start the program with the parameters **-d [cfgdir]** 
 4. A pid file you can use to send a SIGUSR2 to the new process will be created inside that directory
+
+I didn't really test it, but alts joining channels my affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
 * **2021-09-14** Added another JSON endpoint for general stats
