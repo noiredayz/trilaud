@@ -1,37 +1,45 @@
 # trilaud
-Gifted sub farmer for Twitch TriHard :handshake: VisLaud
+Used to be a gifted sub farmer for Twitch.
 
-## TrollDespair this was it wasn't it ##
-I'm getting multiple reports that this method of yoinking gift subs no longer works. It was fune while it lasted lads and lasses. WeirdChamp @the one who snitched
+Twitch backed devs changed something, so  you cannot get gifted subs just by being in a channel 
+(or the chance is very low, you are at the end of the list). 
 
-I'll keep developing this (now probably useless) program, as it's a good programming excercise.
+Still, this can be still used as an enterprise-grade sub gift monitoring application with JSON endpoints to interact with
+some dank frontend or chatbot Copesen
 
 ## Features ##
 * Synchronous channel join, respects the [recently enforced ratelimits](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). Join more than 20 channels without issues.
 * Optional: play a sound when you get a gift
 * Optional: monitor pings (mentions), play a sound in addition if enabled
-* Add new channels without restarting. Just add the new channels to channels.txt and send the program a SIGUSR2 or use the integrated web server to send a reload command (Windows users must use the later as Windows doesn't support SIGUSR1-2)
+* Add new channels without restarting using an integrated web interface (all OS') or sending SIGUSR2 (Unix-like OS, will not work on Windows)
 * [Free software](https://www.gnu.org/philosophy/free-sw.html) under the [GNU GPL](https://www.gnu.org/licenses/gpl-3.0.html). Bug reports and feature requests are welcome.
 * Designed for unattended use. Set it up and forget about it (kinda Okayeg)
 * No need to register a dedicated Twitch application for it
 * Should run just fine on Windows, OSX and GNU/Linux. On Free and Dragonfly BSD you'll need the alsa utils compatibility package to hear sounds
 * Shoult run on other platforms supported by node.js, but without sound playback for now.
 * No architecture specifc code I know of. You can run it on your Raspberry PI 24/7! (this is how I use it akshually 🤓) Some people told me they run it from termux from their old Android phones. Farm subs and reduce e-waste today.
-* Easy way to run multiple instances so you can farm on your alts WidestHard . o O ( vadiFun ALTS? )
+* Easy way to run multiple instances so you can run it under multiple usernames
 
 ## What does this do? ##
-This simple nodejs program joins a bunch of Twitch channels for ya, so you can yoink gifted subs and event emotes WideHardo
+This simple nodejs program joins a bunch of Twitch channels and collects publicly available data about gifted subs (amount, channel and gifters name or anon)
 ## What doesn't this program do ##
-It will not say anything under your name. You are just another name in the viewer list that nobody checks anyway pepeLaugh
+It will not say anything under your name.
 ## Why does it join channels so slow? forsenY ##
 [Twitch limits the rate of how many channels you can join under a given time](https://dev.twitch.tv/docs/irc/guide#authentication-and-join-rate-limits). 
 For non-"verified bot" accounts this is 20 channel joins per 10 seconds. The program joins one channel once per at least 580ms, a safe value (roughly 17 joins per 10 seconds). 
 From my experience with twitch ratelimits it's best to play safe. To reduce the impact of this (as also mentioned) you can add more channels without restarting. 
 Just add the new channels to channels.txt and send SIGUSR2 to the program or use the web interface to start a reload.
 
+## System requirements ##
+* NodeJS 10.x LTS
+* any OS that can run node 10
+* any hardware that can run an OS that can run node 10. Tested and used on 32bit hardfloat ARM and x86
+* Internet connection
+* 60MB free RAM and 11MB free space (additional free space is required for node and log files of PM2 if used)
+
 ## How to use? FeelsDankMan ##
 0. Recommended: install git. Linux and BSD users can use their distros' package manager. Windows users can get it from [here](https://gitforwindows.org/) or get it from [Chocolatey](https://community.chocolatey.org/packages/git) 
-1. Download or clone the repo **As the program is under constant, daily development I suggest you clone it using git and update it regularly**
+1. Download or clone the repo **As the program is under constant, development I suggest you clone it using git and update it regularly**
 2. Copy config.js.example to config.js
 3. Open config.js in a text editor and fill out the config. Instruction are inside
 4. create a file called "channels.txt" and fill it with channels you want to be in, one channel per line. Empty and too short lines are ignored
@@ -43,6 +51,8 @@ Just add the new channels to channels.txt and send SIGUSR2 to the program or use
 ## http interface ##
 triLaud has an integrated web server (nodejs http server based, no additional bloat) for stats and reload option for Windows users. 
 If you don't need/don't want this functionality set http port to 0 in the config (or remove the setting).
+
+**On systems that are accessible by other on the network I recommend setting the web server IP address to localhost or setting up firewall rules to prevent unauthorized access**
 
 HTML Endpoints (for humans like us):
 * / : stats in html
@@ -72,6 +82,7 @@ Planned:
 I didn't really test it, but alts joining channels my affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
+* **2021-10-01** I confirmed with high confidence that you cannot farm subs this way. It was a fun ride bois.
 * **2021-09-14** Added another JSON endpoint for general stats
 * **2021-08-29** Added JSON endpoints for statistics pages.
 * **2021-08-25** Fixed an issue where pidfile writing threw a TypeError on node 14+
