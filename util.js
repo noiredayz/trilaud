@@ -18,7 +18,16 @@ function detectLineEndings(inTxt){
 }
 
 function gftime(){
-	return df.format(new Date, "yyyy-MM-dd HH:mm:ss");
+	switch (trl.conf.dateformat){
+		case "DMY":
+			return df.format(new Date, "dd-MM-yyyy HH:mm:ss");
+			break;
+		case "MDY":
+			return df.format(new Date, "MM-dd-yyyy HH:mm:ss");
+			break;
+		default:
+			return df.format(new Date, "yyyy-MM-dd HH:mm:ss");
+		}
 }
 
 function memusage(){

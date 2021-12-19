@@ -8,6 +8,7 @@ exports.trilaud_config = {
 	textcolors: true,		//set it to false to make stdout sparkle
 	httpPort: 8500,			//set it to 0 to disable the http server.
 	httpHost: "localhost",
+	dateformat: "YMD",
 	restartOnCapError: true	//set it to false to not restart the client on capabilitieserrors
 							//DANGEROUS! only use it if you know what you're doing pajaS
 }
@@ -21,6 +22,10 @@ exports.trilaud_config = {
  * 
  * You can use the supplied beepbeep.wav file
  *
+ * Date formats:
+ * YMD for 2021-12-27 year-month-day (default if it's non-set or set to an invalid value)
+ * DMY for 27-12-2021 day-year-month
+ * MDY for KKonaW 12-27-2021 month-day-year format
  */
  
  

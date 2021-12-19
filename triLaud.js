@@ -6,6 +6,7 @@ const os = require("os");
 const chalk = require("chalk");
 const http = require("http");
 const { tableCSS, detectLineEndings, gftime, memusage, sleep } = require("./util.js");
+global.trl = new Object;
 let conf;
 let twd="./";
 const ptl = console.log;
@@ -16,6 +17,7 @@ let joinerStatus = 0;
 let counters = {anon: 0, self: 0, normal: 0};
 
 LoadConf();
+trl.conf = conf;
 
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
@@ -286,6 +288,7 @@ function LoadConf(){
 		process.exit(1);
 	}	
 	twd="./"+process.argv[i+1]+"/";
+	
 	return;
 }
 
