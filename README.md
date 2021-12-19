@@ -1,10 +1,5 @@
 # trilaud
-Used to be a gifted sub farmer for Twitch.
-
-Twitch backed devs changed something, so  you cannot get gifted subs just by being in a channel 
-(or the chance is very low, you are at the end of the list).
-
-This program is pretty much useless now.
+Any homies? WideHardo
 
 ## System requirements ##
 * NodeJS 10.x LTS
@@ -12,7 +7,7 @@ This program is pretty much useless now.
 * any hardware that can run an OS that can run node 10. Tested and used on 32bit hardfloat ARM and x86
 * Internet connection
 * 60MB free RAM and 11MB free space (additional free space is required for node and log files of PM2 if used)
-* sound playback requires Windows 7+, Linux, OpenBSD, FreeBSD or DragonfyBSD
+* sound playback requires Windows 7+, Linux, OpenBSD, FreeBSD or DragonfyBSD. Additional OS' may be supported once I add them to [node-wav-player](https://github.com/noiredayz/node-wav-player)
 
 ## How to use? ##
 1. Download or clone the repo 
@@ -22,7 +17,7 @@ This program is pretty much useless now.
 5. Download and install node.js. I recommend using Note 16LTS if you don't use node yourself.
 6. Run **npm si** in the project's folder to install the required modules. Of course you can use **npm install** too, however **si** installs the same verisons of packages I have on my dev pc and also in the packages-lock.json, minimizing the chance of incompatibility errors.
 7. Run the program with "node triLaud.js"
-8. optional: Install the pm2 process manager (https://pm2.keymetrics.io/) and run the program with "pm2 start triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
+8. optional: Install the [pm2 process manager](https://pm2.keymetrics.io/) and run the program with "pm2 start triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
 9. On updates: check the console or config.js.example for added new options that require setup
 
 ## http interface ##
@@ -55,6 +50,7 @@ JSON Endpoints (for machines, not for us humans):
 I didn't really test it, but alts joining channels might affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
+* **2021-12-19** VIET_ _ _ ?
 * **2021-10-01** I confirmed with high confidence that you cannot farm subs this way. It was a fun ride bois.
 * **2021-09-14** Added another JSON endpoint for general stats
 * **2021-08-29** Added JSON endpoints for statistics pages.
