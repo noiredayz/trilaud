@@ -1,6 +1,26 @@
 # trilaud
 Any homies? WideHardo
 
+## Wadu hek? ##
+triLaud is a simple yet feature rich application that joins a bunch of
+Twitch channels using supplied credentials and collects publicly available
+information about gifted subs and -depending on how you configured it- alerts
+you that you got a gifted sub. It also features an extremely light, Internet Explorer 5.0
+compatible web interface to view stats about gifts.
+
+## Features ##
+* Designed for unattended use, best used with pm2 process manager
+* Respects the channel join ratelimits, join -theoretically- any amount of channels
+* Join new channels without restart
+* Simple configuration via plaintext. No database service required.
+* OS and hardware independent
+* Reasonably few dependencies. SSD friendly :)
+* Low hardware requirements. You can run it on your dusty PI1, decomissioned smartphone or tablet with broken screen
+* Sends you an audible alert when you get a gift or get pinged (both configurable)
+* Reload channels (and add new channels) using an UNIX signal (Unix-like OS') or web interface (any OS)
+* Supa minimal, no bullshit web interface w/ JSON API
+* [Free software](https://www.gnu.org/philosophy/free-sw.en.html) under the GNU GPL version 3
+ 
 ## System requirements ##
 * NodeJS 10.x LTS
 * any OS that can run node 10
@@ -50,6 +70,7 @@ JSON Endpoints (for machines, not for us humans):
 I didn't really test it, but alts joining channels might affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
+* **2022-01-02** New year, new and upaded deps
 * **2021-12-19** VIET_ _ _ ?
 * **2021-10-01** I confirmed with high confidence that you cannot farm subs this way. It was a fun ride bois.
 * **2021-09-14** Added another JSON endpoint for general stats
