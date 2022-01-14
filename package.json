@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/noiredayz/trilaud/issues"
   },
-  "homepage": "https://github.com/noiredayz/trilaud#readme"
+  "homepage": "https://github.com/noiredayz/trilaud#readme",
+  "devDependencies": {
+    "eslint": "^8.6.0"
+  }
 }
