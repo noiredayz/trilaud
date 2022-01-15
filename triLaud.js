@@ -5,6 +5,7 @@ const fs = require("fs");
 const os = require("os");
 const chalk = require("chalk");
 const http = require("http");
+const process = require("process");
 const { tableCSS, detectLineEndings, gftime, memusage, sleep } = require("./util.js");
 global.trl = new Object;
 let conf;
@@ -295,6 +296,7 @@ function LoadConf(){
 async function requestHandler(req, res){
 	ptl(`<http> Incoming request for "${req.url}"`);
 	let inurl = req.url.split("?");
+	let icon=undefined;
 	switch(inurl[0]){
 		case "/index.htm":
 		case "/index.html":
@@ -359,7 +361,6 @@ async function requestHandler(req, res){
 			res.end();
 			break;
 		case "/favicon.ico":
-			let icon=undefined;
 			try {
 				icon = fs.readFileSync("./favicon.ico");
 			}

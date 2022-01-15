@@ -1,4 +1,5 @@
 const df = require("date-fns");
+const process = require("process");
 
 const tableCSS = `<style>table {border-collapse: collapse; border: 2px solid black;} tr {border: 2px solid black;} td {border: 1px solid black;}</style>`;
 
@@ -21,10 +22,8 @@ function gftime(){
 	switch (trl.conf.dateformat){
 		case "DMY":
 			return df.format(new Date, "dd-MM-yyyy HH:mm:ss");
-			break;
 		case "MDY":
-			return df.format(new Date, "MM-dd-yyyy HH:mm:ss");
-			break;
+			return df.format(new Date, "MM-dd-yyyy HH:mm:ss");	
 		default:
 			return df.format(new Date, "yyyy-MM-dd HH:mm:ss");
 		}
