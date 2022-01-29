@@ -18,7 +18,8 @@
     "chalk": "^4.1.2",
     "dank-twitch-irc": "^4.3.0",
     "date-fns": "^2.28.0",
-    "node-wav-player": "https://github.com/noiredayz/node-wav-player/archive/refs/tags/v.0.2.2.tar.gz"
+    "node-wav-player": "https://github.com/noiredayz/node-wav-player/archive/refs/tags/v.0.2.2.tar.gz",
+    "winston": "^3.5.0"
   },
   "author": "noiredayz",
   "license": "GPL-3.0-or-later",
@@ -28,5 +29,9 @@
   "homepage": "https://github.com/noiredayz/trilaud#readme",
   "devDependencies": {
     "eslint": "^8.6.0"
+  },
+  "scripts": {
+	  "testformat": "npx eslint ./"
   }
 }
+
