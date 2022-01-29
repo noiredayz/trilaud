@@ -300,6 +300,7 @@ async function requestHandler(req, res){
 	switch(inurl[0]){
 		case "/index.htm":
 		case "/index.html":
+		case "/index":
 		case "/":
 			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			res.write(genIndexPage());
@@ -389,7 +390,8 @@ async function requestHandler(req, res){
 			res.end();
 			break;
 		default:
-			res.writeHead(418, {'Content-Type': 'te', 'Cache-Control': 'no-cache'});
+			ptlw(`<http> 404 - Invalid path ${inurl[0]}`);
+			res.writeHead(404, {'Content-Type': 'te', 'Cache-Control': 'no-cache'});
 			res.write("404 - Content not found");
 			res.end();
 			break;
@@ -457,7 +459,7 @@ function getChannelStatsJSON(){
 function genGifterStats(){
 	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(oilers.length===0){
-		retval+=`No gifts so far PepeHands</body></html>`;
+		retval+=`No gifts so far PepeHands<br><a href="index">Go back to main page</a></body></html>`;
 		return retval;
 	} else {
 		retval += `<table>\n<tr><td>Gifter's name</td><td>Gift count<br>(across all active channels)</td></tr>\n`;
@@ -489,7 +491,7 @@ if(cStat!=1)
 	retval += `<b>Channel reload command issued successfully.<b><br>`;
 else
 	retval += `<b>triLaud is currently busy joining new or the initial set of channels. Please try again later.<b><br>`;
-retval += `<a href="/">Main page</a>
+retval += `<a href="index">Main page</a>
 </body></html>`;
 return retval;	
 }
