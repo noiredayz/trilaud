@@ -6,12 +6,11 @@ const os = require("os");
 const chalk = require("chalk");
 const http = require("http");
 const process = require("process");
+const winston = require("winston");
 const { tableCSS, detectLineEndings, gftime, memusage, sleep } = require("./util.js");
 global.trl = new Object;
-let conf;
+let conf, ptl;
 let twd="./";
-const ptl = console.log;
-const ptlw = console.warn;
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
 let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
@@ -20,9 +19,32 @@ let counters = {anon: 0, self: 0, normal: 0};
 LoadConf();
 trl.conf = conf;
 
+if(conf.log2file){
+	try { ptl = winston.createLogger({
+		level: "info",
+		format: winston.format.simple(),
+		transports: [
+			new winston.transports.Console({level: "info"}),
+			new winston.transports.File({filename: "trilaud-errors-"+conf.username+".log", level: "error"}),
+			new winston.transports.File({filename: "trilaud-combined-"+conf.username+".log", level: "info"})
+			]
+		});
+	}
+	catch(err){
+		console.warn(`Fatál: cannot create logger: ${err}`);
+		console.warn(`If the error was because of file permission errors fix the permissions on the program's folder or disable file logging`);
+		process.exit(1);
+	}
+} else {
+	ptl = winston.createLogger({
+		level: "info",
+		format: winston.format.cli(),
+		transports: [ new winston.transports.console({level: "info"}) ]});
+}
+
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
-	ptlw(`<warn> Configuration setting textcolors is missing, not colorizing output. If you want colors add it to config and set it to true. See config.js.example for details.`);
+	ptl.warn(`<warn> Configuration setting textcolors is missing, not colorizing output. If you want colors add it to config and set it to true. See config.js.example for details.`);
 	chalk.level = 0;
 } else {
 	if(conf.textcolors===false)
@@ -33,25 +55,25 @@ try{
 	fs.writeFileSync(twd+"pid", process.pid.toString());
 }
 catch(err){
-	ptlw(chalk.red(`<error> Unable to write pid to file: ${err}`));
+	ptl.error(chalk.red(`<error> Unable to write pid to file: ${err}`));
 }
 
-ptl(`<startup> TriLaud v0.1.3 starting up at ${gftime()}`);
-ptl(`<startup> System: ${os.platform} @ ${os.hostname}, node version: ${process.versions.node}, v8 version: ${process.versions.v8}`);
+ptl.warn(`<startup> TriLaud v0.1.3 starting up at ${gftime()}`);
+ptl.info(`<startup> System: ${os.platform} @ ${os.hostname}, node version: ${process.versions.node}, v8 version: ${process.versions.v8}`);
 
 if(conf.pingsound==="")
-	ptlw(chalk.yellow(`<warn> pingsound setting is empty in config.js. No sound will be played when you get pinged`));
+	ptl.warn(chalk.yellow(`<warn> pingsound setting is empty in config.js. No sound will be played when you get pinged`));
 if(conf.giftsound==="")
-	ptlw(chalk.yellow(`<warn> giftsound setting is empty in config.js. No sound will be played when you get a gift`));
+	ptl.warn(chalk.yellow(`<warn> giftsound setting is empty in config.js. No sound will be played when you get a gift`));
 if(typeof(conf.restartOnCapError)==="undefined"){
-	ptlw(chalk.yellow(`<warn> WARNING! Configuration setting restartOnCapError is missing! Please add the option to config. See config.js.example for details.`));
+	ptl.warn(chalk.yellow(`<warn> WARNING! Configuration setting restartOnCapError is missing! Please add the option to config. See config.js.example for details.`));
 }
 if(typeof(conf.httpPort)!="number"){
-	ptlw(chalk.yellow(`<warn> httpPort config option is missing or invalid, not starting a http server. Reloading under Windows will not be possible.`));
-	ptlw(chalk.yellow(`<warn> See config.js.example for details of how to add it.`));
+	ptl.warn(chalk.yellow(`<warn> httpPort config option is missing or invalid, not starting a http server. Reloading under Windows will not be possible.`));
+	ptl.warn(chalk.yellow(`<warn> See config.js.example for details of how to add it.`));
 } else {
 	if(conf.httpPort <= 0 || conf.httpPort > 65535){
-		ptlw(chalk.yellow(`<warn> httpPort config option is set to 0 or an invalid number, not starting a web server. Set it to any number 1 through 65535 to start it.`));
+		ptl.warn(chalk.yellow(`<warn> httpPort config option is set to 0 or an invalid number, not starting a web server. Set it to any number 1 through 65535 to start it.`));
 	} else {
 		let thost;
 		if(!conf.httpHost)
@@ -62,8 +84,8 @@ if(typeof(conf.httpPort)!="number"){
 			http.createServer(requestHandler).listen(conf.httpPort, thost);
 		}
 		catch(err){
-			ptlw(chalk.redBright(`<err> Unable to start web server at port ${conf.httpPort}: ${err}`));
-			ptlw(chalk.redBright(`<err> Web functions (including reloading under Windows) will not be usable!`));
+			ptl.error(chalk.redBright(`<err> Unable to start web server at port ${conf.httpPort}: ${err}`));
+			ptl.error(chalk.redBright(`<err> Web functions (including reloading under Windows) will not be usable!`));
 		}
 	}
 }
@@ -80,45 +102,45 @@ client.on("USERNOTICE", onUserNotice);
 client.on("RECONNECT", onReconnect);
 
 function onReconnect(){
-	ptl(`<cc> TMI requested reconnect, reconnecting...`);
+	ptl.info(`<cc> TMI requested reconnect, reconnecting...`);
 }
 
 function onConnecting(){
-	ptl(`<cc> Connecting to TMI`);
+	ptl.info(`<cc> Connecting to TMI`);
 }
 function onConnect(){
-	ptl(chalk.green(`<cc> Connected!`));
-	ptl(`<cc> Logging in...`);
+	ptl.info(chalk.green(`<cc> Connected!`));
+	ptl.info(`<cc> Logging in...`);
 }
 
 function onReady(){
-	ptl(chalk.green(`<cc> Logged in! Chat module ready.`));
+	ptl.info(chalk.green(`<cc> Logged in! Chat module ready.`));
 	JoinChannels();
 }
 
 function onClose(){
-	ptlw(chalk.yellow(`<cc> Connection to TMI was closed.`));
+	ptl.warn(chalk.yellow(`<cc> Connection to TMI was closed.`));
 }
 function onError(inErr){
-	ptl(chalk.redBright(`<cc> Chatclient error detected: ${inErr}`));
+	ptl.error(chalk.redBright(`<cc> Chatclient error detected: ${inErr}`));
 	if (inErr.name==="LoginError"){
-		ptl(chalk.redBright(`<cc> Login error detected, cannot continue. Terminating application.`));
+		ptl.error(chalk.redBright(`<cc> Login error detected, cannot continue. Terminating application.`));
 		process.exit(1);
 	}
 	if(inErr.name==="CapabilitiesError"){
 		if(conf.restartOnCapError){
-			ptl(chalk.redBright(`<cc> Capabilities error detected. Terminating application as per the configuration setting.`));
+			ptl.error(chalk.redBright(`<cc> Capabilities error detected. Terminating application as per the configuration setting.`));
 			process.exit(1);
 		} else {
-			ptl(chalk.yellow(`<cc> Capabilities error detected, but not doing anything because the configuration setting says no.`));
-			ptl(chalk.yellow(`<cc> If the program seems to not do anything/you disappear from chat/messages stop coming it's advised to restart it.`));
+			ptl.warn(chalk.yellow(`<cc> Capabilities error detected, but not doing anything because the configuration setting says no.`));
+			ptl.warn(chalk.yellow(`<cc> If the program seems to not do anything/you disappear from chat/messages stop coming it's advised to restart it.`));
 			return;
 		}
 			
 	}
 	if(inErr.name==="ReconnectError"){
-		ptl(chalk.redBright(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`));
-		ptl(chalk.redBright(`<cc> Restarting application as a safety measure`));
+		ptl.error(chalk.redBright(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`));
+		ptl.error(chalk.redBright(`<cc> Restarting application as a safety measure`));
 		process.exit(0);
 	}
 }
@@ -126,17 +148,17 @@ function onError(inErr){
 async function onUserNotice(inMsg){
 	if(inMsg.isSubgift() || inMsg.isAnonSubgift()){
 		if (inMsg.eventParams.recipientUsername.toLowerCase() === conf.username.toLowerCase()){
-			ptl(chalk.magenta(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`));
+			ptl.info(chalk.magenta(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`));
 			counters.self++;
 			if(conf.giftsound.length>0){
 				try { await player.play({path: conf.giftsound}); }
 				catch(err){
-					ptlw(chalk.redBright(`<soundplayer> Gift sound playback failed: ${err}`));
+					ptl.error(chalk.redBright(`<soundplayer> Gift sound playback failed: ${err}`));
 				}
 			}
 		}
 		else {
-			ptl(`[${gftime()}] ${inMsg.displayName || 'An anonymous gifter'} gifted a sub to ${inMsg.eventParams.recipientUsername} in #${inMsg.channelName}`);
+			ptl.info(`[${gftime()}] ${inMsg.displayName || 'An anonymous gifter'} gifted a sub to ${inMsg.eventParams.recipientUsername} in #${inMsg.channelName}`);
 			if(inMsg.displayName === "AnAnonymousGifter")
 				counters.anon++;
 			else
@@ -153,11 +175,11 @@ async function incomingMessage(inMsg){
 	let channel = inMsg.channelName;
 	const rx = new RegExp(conf.username, "i");
 	if(rx.test(message) && sender!=conf.username){
-		ptl(chalk.magenta(`[${gftime()}] ${sender} pinged you in #${channel}: ${message}`));
+		ptl.info(chalk.magenta(`[${gftime()}] ${sender} pinged you in #${channel}: ${message}`));
 		if(conf.pingsound.length>0){
 			try { await player.play({path: conf.pingsound}); }
 			catch(err){
-				ptlw(chalk.redBright(`<soundplayer> Ping sound playback failed: ${err}`));
+				ptl.error(chalk.redBright(`<soundplayer> Ping sound playback failed: ${err}`));
 			}
 		}
 	}
@@ -171,11 +193,11 @@ function LoadChannels(inFile){
 		buff = fs.readFileSync(inFile);
 	}
 	catch(err){
-		ptlw(chalk.redBright(`<error> LoadChannels: unable to read ${inFile}: ${err}`));
+		ptl.error(chalk.redBright(`<error> LoadChannels: unable to read ${inFile}: ${err}`));
 		return -1;
 	}
 	if(buff.length<3){
-		ptlw(chalk.yellow(`<warn> channels.txt is empty or contains no valid channel adata`));
+		ptl.warn(chalk.yellow(`<warn> channels.txt is empty or contains no valid channel adata`));
 		return -1;
 	}
 	buff = buff.toString();
@@ -226,7 +248,7 @@ async function JoinChannels(){
 			}
 			finally{
 				if(!isfailed){
-					ptl(chalk.green(`Successfully joined channel ${c}`));
+					ptl.info(chalk.green(`Successfully joined channel ${c}`));
 					activechannels.push(c);
 					ptime = joinDelay-(new Date - stime);
 					if(ptime>0) await sleep(ptime);
@@ -239,10 +261,10 @@ async function JoinChannels(){
 
 function ReloadChannels(){
 	if(joinerStatus === 0){
-		ptl(chalk.cyan(`[${gftime()}] Received SIGUSR2S, reloading channels`));
+		ptl.warn(chalk.cyan(`[${gftime()}] Received SIGUSR2S, reloading channels`));
 		JoinChannels();
 	} else {
-		ptl(chalk.yellow(`[${gftime()}] Received SIGUSR2S, but the joiner process is busy. Not reloading channels.`));
+		ptl.warn(chalk.yellow(`[${gftime()}] Received SIGUSR2S, but the joiner process is busy. Not reloading channels.`));
 	}
 }
 
@@ -270,22 +292,23 @@ function LoadConf(){
 		conf = require("./config.js").trilaud_config;
 		}
 		catch(err){
-			ptl("The configuration file config.js is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
-			ptl(err);
+			ptl.err("The configuration file config.js is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+			ptl.err(err);
 			process.exit(1);
 		}
 		return;
 	}
 	if(!process.argv[i+1]){
-		ptl(`Usage: node triLaud.js -d [config file dir]`);
+		//intentionally using console.log here
+		console.log(`Usage: node triLaud.js -d [config file dir]`);
 		process.exit(0);
 	}
 	try{
 		conf = require("./"+process.argv[i+1]+"/config.js").trilaud_config;
 	}
 	catch(err){
-		ptl("The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
-		ptl(err);
+		ptl.err("The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+		ptl.err(err);
 		process.exit(1);
 	}	
 	twd="./"+process.argv[i+1]+"/";
@@ -294,7 +317,7 @@ function LoadConf(){
 }
 
 async function requestHandler(req, res){
-	ptl(`<http> Incoming request for "${req.url}"`);
+	ptl.info(`<http> Incoming request for "${req.url}"`);
 	let inurl = req.url.split("?");
 	let icon=undefined;
 	switch(inurl[0]){
@@ -309,10 +332,10 @@ async function requestHandler(req, res){
 		case "/reload":
 			res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache'});
 			if(joinerStatus != 0){
-				ptl(chalk.yellow(`<http> Reload requested, but the joiner process is currently active. Not reloading.`));
+				ptl.warn(chalk.yellow(`<http> Reload requested, but the joiner process is currently active. Not reloading.`));
 				res.write(getReloadReply(1));
 			} else {
-				ptl(chalk.cyan(`<http> Reloading channels`));
+				ptl.warn(chalk.cyan(`<http> Reloading channels`));
 				JoinChannels();
 				res.write(getReloadReply(0));
 			}	
@@ -352,10 +375,10 @@ async function requestHandler(req, res){
 		case "/api/reload":
 			res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache'});
 			if(joinerStatus != 0){
-				ptl(chalk.yellow(`<http> Reload via API requested, but the joiner process is currently active. Not reloading.`));
+				ptl.warn(chalk.yellow(`<http> Reload via API requested, but the joiner process is currently active. Not reloading.`));
 				res.write(JSON.stringify({success: false, status: "already-reloading", msg: "Joiner process is currently busy loading/reloading channels. Please try again later."}));
 			} else {
-				ptl(chalk.cyan(`<http> Reloading channels via APU`));
+				ptl.warn(chalk.cyan(`<http> Reloading channels via APU`));
 				JoinChannels();
 				res.write(JSON.stringify({success: true, status: "reload-cmd-sent", msg: "Reload command successfully issued."}));
 			}	
@@ -366,7 +389,7 @@ async function requestHandler(req, res){
 				icon = fs.readFileSync("./favicon.ico");
 			}
 			catch(err){
-				ptlw(chalk.yellow("<http> Cannot read favicon, sending back 404"));
+				ptl.warn(chalk.yellow("<http> Cannot read favicon, sending back 404"));
 			}
 			if(icon){
 				res.writeHead(200, {'Content-Type': 'image/vnd.microsoft.icon'});
@@ -390,7 +413,7 @@ async function requestHandler(req, res){
 			res.end();
 			break;
 		default:
-			ptlw(`<http> 404 - Invalid path ${inurl[0]}`);
+			ptl.warn(`<http> 404 - Invalid path ${inurl[0]}`);
 			res.writeHead(404, {'Content-Type': 'te', 'Cache-Control': 'no-cache'});
 			res.write("404 - Content not found");
 			res.end();
@@ -459,7 +482,7 @@ function getChannelStatsJSON(){
 function genGifterStats(){
 	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(oilers.length===0){
-		retval+=`No gifts so far PepeHands<br><a href="index">Go back to main page</a></body></html>`;
+		retval+=`No gifts so far PepeHands<br><a href="javascript:history.back()">Go back to main page</a></body></html>`;
 		return retval;
 	} else {
 		retval += `<table>\n<tr><td>Gifter's name</td><td>Gift count<br>(across all active channels)</td></tr>\n`;
