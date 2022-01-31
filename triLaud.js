@@ -39,7 +39,7 @@ if(conf.log2file){
 	ptl = winston.createLogger({
 		level: "info",
 		format: winston.format.cli(),
-		transports: [ new winston.transports.console({level: "info"}) ]});
+		transports: [ new winston.transports.Console({level: "info"}) ]});
 }
 
 process.on("SIGUSR2", ReloadChannels);
