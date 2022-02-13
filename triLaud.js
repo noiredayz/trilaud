@@ -307,8 +307,8 @@ function LoadConf(){
 		conf = require("./"+process.argv[i+1]+"/config.js").trilaud_config;
 	}
 	catch(err){
-		ptl.err("The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
-		ptl.err(err);
+		ptl.error("The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+		ptl.error(err);
 		process.exit(1);
 	}	
 	twd="./"+process.argv[i+1]+"/";
