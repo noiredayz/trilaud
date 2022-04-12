@@ -35,7 +35,7 @@ compatible web interface to view stats about gifts.
 3. Open config.js in a text editor and fill out the config. Instruction are inside
 4. create a file called "channels.txt" and fill it with channels you want to be in, one channel per line. Empty and too short lines are ignored
 5. Download and install node.js. I recommend using Note 16LTS if you don't use node yourself.
-6. Run **npm si** in the project's folder to install the required modules. Of course you can use **npm install** too, however **si** installs the same verisons of packages I have on my dev pc and also in the packages-lock.json, minimizing the chance of incompatibility errors.
+6. Run **npm si** in the project's folder to install the required modules. Of course you can use **npm install** too, however **si** installs the same verisons of packages I have on my dev pc and also in the packages-lock.json, minimizing the chance of incompatibility errors. Important: the Twitch IRC backend (dank-twitch-irc) has been discontinued by the original developed, thus the warning you may see. It will be replaced with a fork as soon as necessary.
 7. Run the program with "node triLaud.js"
 8. optional: Install the [pm2 process manager](https://pm2.keymetrics.io/) and run the program with "pm2 start triLaud.js". pm2 will automatically restart it on case of crashes and errors I can only handle with terminating the application
 9. On updates: check the console or config.js.example for added new options that require setup

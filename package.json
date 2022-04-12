@@ -4,7 +4,7 @@
   "description": "twitch emote and gift farmer WideHardo",
   "main": "triLaud.js",
   "scripts": {
-    "test": "echo no test saj"
+    "testformat": "npx eslint ./"
   },
   "repository": {
     "type": "git",
@@ -29,9 +29,5 @@
   "homepage": "https://github.com/noiredayz/trilaud#readme",
   "devDependencies": {
     "eslint": "^8.6.0"
-  },
-  "scripts": {
-	  "testformat": "npx eslint ./"
   }
 }
-
