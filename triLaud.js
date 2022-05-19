@@ -42,6 +42,20 @@ if(conf.log2file){
 		transports: [ new winston.transports.Console({level: "info"}) ]});
 }
 
+if(conf.autoreplyModule){
+	let failed = false;
+	try{
+		trl.autoreply = require(conf.autoreplyModule);
+	}
+	catch(err){
+		ptl.error(`Unable to load autoreply module: ${err}`);
+		failed = true;
+	}
+	if(!failed){
+		ptl.warn(`Autoreply module ${con.autoreplyModule} loaded successfully`);
+	}
+}
+
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
 	ptl.warn(`<warn> Configuration setting textcolors is missing, not colorizing output. If you want colors add it to config and set it to true. See config.js.example for details.`);
@@ -100,6 +114,8 @@ client.on("error", onError);
 client.on("PRIVMSG", incomingMessage);
 client.on("USERNOTICE", onUserNotice);
 client.on("RECONNECT", onReconnect);
+
+trl.client = client;
 
 function onReconnect(){
 	ptl.info(`<cc> TMI requested reconnect, reconnecting...`);
@@ -181,6 +197,14 @@ async function incomingMessage(inMsg){
 			catch(err){
 				ptl.error(chalk.redBright(`<soundplayer> Ping sound playback failed: ${err}`));
 			}
+		}
+	}
+	if(trl.autoreply){
+		try{
+			trl.autoreply.handleMessage(inMsg);
+		}
+		catch(err){
+			ptl.error(`autoreply failed: ${err}`);
 		}
 	}
 }
