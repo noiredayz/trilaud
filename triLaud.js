@@ -52,7 +52,7 @@ if(conf.autoreplyModule){
 		failed = true;
 	}
 	if(!failed){
-		ptl.warn(`Autoreply module ${con.autoreplyModule} loaded successfully`);
+		ptl.warn(`Autoreply module ${conf.autoreplyModule} loaded successfully`);
 	}
 }
 
@@ -154,11 +154,17 @@ function onError(inErr){
 		}
 			
 	}
+	if(inErr.name==="ConnectionError"){
+		ptl.error(chalk.redBright(`<cc> Network error detected, restarting. If this error persists check if your internet connection is operational.`));
+		ptl.error(chalk.redBright(`<cc> If everything seems OK on your side the error might be on Twitch's side.`));
+		process.exit(1);
+	}
 	if(inErr.name==="ReconnectError"){
 		ptl.error(chalk.redBright(`<cc> Twitch requested us to reconnect, but there was an error doing so: ${inErr}`));
 		ptl.error(chalk.redBright(`<cc> Restarting application as a safety measure`));
 		process.exit(0);
 	}
+	
 }
 
 async function onUserNotice(inMsg){
