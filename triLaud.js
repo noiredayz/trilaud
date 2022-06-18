@@ -1,5 +1,5 @@
 "use strict";
-const { ChatClient } = require("dank-twitch-irc");
+const { ChatClient } = require("@kararty/dank-twitch-irc");
 const player = require("node-wav-player");
 const fs = require("fs");
 const os = require("os");
