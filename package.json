@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@kararty/dank-twitch-irc": "^5.0.0",
-    "chalk": "<5.0.0",
+    "chalk": "<6.0.0",
     "date-fns": "^2.29.3",
     "node-wav-player": "https://github.com/noiredayz/node-wav-player/archive/refs/tags/v.0.2.2.tar.gz",
     "winston": "^3.8.2"
