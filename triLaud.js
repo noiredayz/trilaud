@@ -89,17 +89,21 @@ if(typeof(conf.httpPort)!="number"){
 	if(conf.httpPort <= 0 || conf.httpPort > 65535){
 		ptl.warn(chalk.yellow(`<warn> httpPort config option is set to 0 or an invalid number, not starting a web server. Set it to any number 1 through 65535 to start it.`));
 	} else {
-		let thost;
+		let thost, httpfailed=false;
 		if(!conf.httpHost)
-			thost="localhost";
+			thost="127.0.0.1";
 		else
 			thost=conf.httpHost;
 		try{
 			http.createServer(requestHandler).listen(conf.httpPort, thost);
 		}
 		catch(err){
+			httpfailed=true;
 			ptl.error(chalk.redBright(`<err> Unable to start web server at port ${conf.httpPort}: ${err}`));
 			ptl.error(chalk.redBright(`<err> Web functions (including reloading under Windows) will not be usable!`));
+		}
+		if(!httpfailed){
+			ptl.warn(chalk.green(`<http> server listening at ${thost} port ${conf.httpPort}`));
 		}
 	}
 }
