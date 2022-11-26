@@ -26,8 +26,8 @@ if(conf.log2file){
 		format: winston.format.simple(),
 		transports: [
 			new winston.transports.Console({level: "info"}),
-			new winston.transports.File({filename: "trilaud-errors-"+conf.username+".log", level: "error"}),
-			new winston.transports.File({filename: "trilaud-combined-"+conf.username+".log", level: "info"})
+			new winston.transports.File({filename: "trilaud-errors.log", level: "error"}),
+			new winston.transports.File({filename: "trilaud-combined.log", level: "info"})
 			]
 		});
 	}
@@ -185,7 +185,7 @@ function onError(inErr){
 
 async function onUserNotice(inMsg){
 	if(inMsg.isSubgift() || inMsg.isAnonSubgift()){
-		if (inMsg.eventParams.recipientUsername.toLowerCase() === conf.username.toLowerCase()){
+		if (inMsg.eventParams.recipientUsername === trl.identity.login || inMsg.eventParams.recipientUsername === trl.identity.display_name){
 			ptl.info(chalk.magenta(`[${gftime()}] PagMan YOU GOT A GIFT IN #${inMsg.channelName} FROM ${inMsg.displayName || 'an anonymous gifter!'}`));
 			counters.self++;
 			if(conf.giftsound.length>0){
@@ -504,9 +504,9 @@ async function requestHandler(req, res){
 function genIndexPage(){
 return `
 <html>
-<head><title>triLaud - ${conf.username}@${os.hostname()} (${os.platform()})</title></head>
+<head><title>triLaud - ${trl.identity.login}@${os.hostname()} (${os.platform()})</title></head>
 <body>
-<b>Current user: <code>${conf.username}</code></b><br>
+<b>Current user: <code>${trl.identity.login} (${trl.identity.display_name})</code></b><br>
 <b>Active channels: <code>${activechannels.length}</code></b><br>
 <b>Process memory usage: <code>${memusage()}</code></b><br>
 <b>Gifts you received: ${counters.self}</b><br>
@@ -522,7 +522,7 @@ function genStatsJson(){
 	let retval = {
 		host: os.hostname(),
 		platform: os.platform(),
-		username: conf.username,
+		username: trl.identity.login,
 		chActive: activechannels.length,
 		memusage: process.memoryUsage().rss,
 		gifts: {
@@ -535,7 +535,7 @@ function genStatsJson(){
 }
 
 function genChannelStats(){
-	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Channel statistics</title>\n${tableCSS}\n</head>\n<body>\n`;
+	let retval=`<html>\n<head><title>triLaud - ${trl.identity.login}@${os.hostname} (${os.platform}) - Channel statistics</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(chgifts.length===0){
 		retval+=`No gifts so far PepeHands</body></html>`;
 		return retval;
@@ -560,7 +560,7 @@ function getChannelStatsJSON(){
 }
 
 function genGifterStats(){
-	let retval=`<html>\n<head><title>triLaud - ${conf.username}@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
+	let retval=`<html>\n<head><title>triLaud - ${trl.identity.login}@${os.hostname} (${os.platform}) - Gifter stats AbdulPls</title>\n${tableCSS}\n</head>\n<body>\n`;
 	if(oilers.length===0){
 		retval+=`No gifts so far PepeHands<br><a href="javascript:history.back()">Go back to main page</a></body></html>`;
 		return retval;
