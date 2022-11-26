@@ -7,6 +7,7 @@ const chalk = require("chalk");
 const http = require("http");
 const process = require("process");
 const winston = require("winston");
+const got = require("got");
 const { tableCSS, detectLineEndings, gftime, memusage, sleep } = require("./util.js");
 global.trl = new Object;
 let conf, ptl;
@@ -109,7 +110,7 @@ if(typeof(conf.httpPort)!="number"){
 }
 
 
-const client = new ChatClient({username: conf.username, password: conf.oauth});
+const client = new ChatClient({password: "oauth:"+conf.oauth});
 client.on("connecting", onConnecting);
 client.on("connect", onConnect);
 client.on("ready", onReady);
@@ -133,8 +134,19 @@ function onConnect(){
 	ptl.info(`<cc> Logging in...`);
 }
 
-function onReady(){
+async function onReady(){
 	ptl.info(chalk.green(`<cc> Logged in! Chat module ready.`));
+	let ident;
+	try{
+		ident = await whoami();
+	}
+	catch(err){
+		ptl.error(chalk.red(`Error while trying to read the identity of your user: ${err}`));
+		ptl.error(chalk.red(`triLaud cannot continue, terminating.`));
+		process.exit(1);
+	}
+	trl.identity = ident;
+	ptl.info(chalk.green(`Found identity: ${ident.login}(${ident.display_name}), UID ${ident.id}`));
 	JoinChannels();
 }
 
@@ -197,10 +209,12 @@ async function onUserNotice(inMsg){
 async function incomingMessage(inMsg){
 	if(!conf.alertOnPings) return;
 	let sender 	= inMsg.senderUsername.toLowerCase();
+	if(sender === trl.identity.login) return;
 	let message = String(inMsg.messageText);
 	let channel = inMsg.channelName;
-	const rx = new RegExp(conf.username, "i");
-	if(rx.test(message) && sender!=conf.username){
+	const rx = new RegExp(trl.identity.login, "i");
+	const rx2 = new RegExp(trl.identity.display_name, "i");
+	if(rx.test(message) || rx2.test(message)){
 		ptl.info(chalk.magenta(`[${gftime()}] ${sender} pinged you in #${channel}: ${message}`));
 		if(conf.pingsound.length>0){
 			try { await player.play({path: conf.pingsound}); }
@@ -347,8 +361,40 @@ function LoadConf(){
 	}	
 	twd="./"+process.argv[i+1]+"/";
 	
+	if(!conf.clientid || conf.clientid===""){
+		console.error("Missing or unconfigured setting 'clientid'. Please update your config or set the value.");
+		console.error("See config.js.example on explanation what you need.");
+		process.exit(1);
+	}
 	return;
 }
+
+function whoami(){
+return new Promise(async (resolve, reject) => {
+	const https_options = {
+		url: "https://api.twitch.tv/helix/users",
+		method: "GET",
+		headers:{
+			'Authorization': 'Bearer '+conf.oauth,
+			'Client-ID': conf.clientid
+		},
+		retry: 2,
+		timeout: 2000
+	};
+	let retval;
+	try{
+		retval = await got(https_options);
+	}
+	catch(err){
+		reject(err);
+		return;
+	}
+	const rdata = JSON.parse(retval.body);
+	if(rdata.data.length === 0) reject("unhandled twitch API error (cannot look up own identity)");
+	else resolve(rdata.data[0]);	
+});
+}
+
 
 async function requestHandler(req, res){
 	ptl.info(`<http> Incoming request for "${req.url}"`);

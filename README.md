@@ -1,6 +1,11 @@
 # trilaud
 Any homies? WideHardo
 
+## Upgrade notification ##
+In the 2022-11-26 release I changed how some thing with authentication and self-identity works.
+In the config the "username" setting is no longer used. The program will use the oauth code + a required
+client ID to determine who the oauth belongs to. See config.js.example for explanation.
+
 ## Wadu hek? ##
 triLaud is a simple yet feature rich application that joins a bunch of
 Twitch channels using supplied credentials and collects publicly available
@@ -22,7 +27,7 @@ compatible web interface to view stats about gifts.
 * [Free software](https://www.gnu.org/philosophy/free-sw.en.html) under the GNU GPL version 3
  
 ## System requirements ##
-* NodeJS 10.x LTS
+* NodeJS 16.x LTS
 * any OS that can run node 10
 * any hardware that can run an OS that can run node 10. Tested and used on 32bit hardfloat ARM and x86
 * Internet connection
@@ -70,6 +75,7 @@ JSON Endpoints (for machines, not for us humans):
 I didn't really test it, but alts joining channels might affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
+* **2022-11-26** Now uses Helix to confirm own identity
 * **2022-01-02** New year, new and upaded deps
 * **2021-12-19** VIET_ _ _ ?
 * **2021-10-01** I confirmed with high confidence that you cannot farm subs this way. It was a fun ride bois.

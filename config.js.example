@@ -1,8 +1,8 @@
 "use strict";
 exports.trilaud_config = {
-	username: "",			//your username
 	alertOnPings: false,	//set it true if you want messages containing your username logged		
-	oauth: "",				//get it from https://twitchapps.com/tmi/
+	oauth: "",				//READ BELOW!
+	clientid: "",
 	pingsound: "",			//sound to play when you get binged if alertOnPings is set to true
 	giftsound: "",			//sound to play when get a gift
 	textcolors: true,		//set it to false to make stdout sparkle
@@ -14,7 +14,18 @@ exports.trilaud_config = {
 							//DANGEROUS! only use it if you know what you're doing pajaS
 }
 
-/*
+/* 
+ * oauth code must be an "implicit flow" code. Do not use server or renewable
+ * codes, this application is not designed to work with those.
+ * DO NOT INCLUDE "oauth:" at the start of the code. Kod only Okayeg !
+ * 
+ * clientid must be the Client ID of the application you used to get your oauth.
+ * I recommend using https://noiresbot.noiredayz.link/trilaud
+ * The login there will only generate an aouth code with only the required
+ * permissions and not any more.
+ * If you wish to keep using twitchapps.com/tmi their client ID is
+ * q6batx0epp608isickayubi39itsckt
+ * 
  * sounds must be wav files. You can use absolute or relative paths.
  * Leave the settings empty ("") if you don't want dink-donk.
  * For long Windows paths remember to double the slashes!
