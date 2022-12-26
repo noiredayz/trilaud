@@ -18,10 +18,12 @@ exports.trilaud_config = {
  * oauth code must be an "implicit flow" code. Do not use server or renewable
  * codes, this application is not designed to work with those.
  * DO NOT INCLUDE "oauth:" at the start of the code. Kod only Okayeg !
+ * triLaud will figure out your identity (nick, display name and user ID)
+ * from the code.
  * 
  * clientid must be the Client ID of the application you used to get your oauth.
  * I recommend using https://noiresbot.noiredayz.link/trilaud
- * The login there will only generate an aouth code with only the required
+ * The login there will generate an oauth code with only the required
  * permissions and not any more.
  * If you wish to keep using twitchapps.com/tmi their client ID is
  * q6batx0epp608isickayubi39itsckt
