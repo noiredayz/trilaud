@@ -22,7 +22,7 @@ exports.trilaud_config = {
  * from the code.
  * 
  * clientid must be the Client ID of the application you used to get your oauth.
- * I recommend using https://noiresbot.noiredayz.link/trilaud
+ * I recommend using https://bot.noiredayz.link/trilaud
  * The login there will generate an oauth code with only the required
  * permissions and not any more.
  * If you wish to keep using twitchapps.com/tmi their client ID is
