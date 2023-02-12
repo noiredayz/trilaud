@@ -2,9 +2,15 @@
 Any homies? WideHardo
 
 ## Upgrade notification ##
+In the 2023-02-12 upgrade I converted parts of the project from "Common JS" to "JS modules" BAAAAAAAAAT
+This means you'll need to reformat your config file! Check the example as always on how to.
+This was required because dependencies used by this program and many others no longer provice cjs exports, 
+only mjs meaning if you stay on cjs, you stay on bugs and security issues the devs only fix in the maintained, mjs versions.
+
 In the 2022-11-26 release I changed how some thing with authentication and self-identity works.
 In the config the "username" setting is no longer used. The program will use the oauth code + a required
 client ID to determine who the oauth belongs to. See config.js.example for explanation.
+
 
 ## Wadu hek? ##
 triLaud is a simple yet feature rich application that joins a bunch of
@@ -75,6 +81,7 @@ JSON Endpoints (for machines, not for us humans):
 I didn't really test it, but alts joining channels might affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
+* **2023-02-12** Conversion to MJS
 * **2022-11-26** Now uses Helix to confirm own identity
 * **2022-01-02** New year, new and upaded deps
 * **2021-12-19** VIET_ _ _ ?

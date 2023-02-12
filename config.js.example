@@ -1,10 +1,9 @@
-"use strict";
-exports.trilaud_config = {
+const trilaud_config = {
 	alertOnPings: false,	//set it true if you want messages containing your username logged		
 	oauth: "",				//READ BELOW!
 	clientid: "",
-	pingsound: "",			//sound to play when you get binged if alertOnPings is set to true
-	giftsound: "",			//sound to play when get a gift
+	pingsound: "beepbeep.wav",			//sound to play when you get binged if alertOnPings is set to true
+	giftsound: "beepbeep.wav",			//sound to play when get a gift
 	textcolors: true,		//set it to false to make stdout sparkle
 	httpPort: 8500,			//set it to 0 to disable the http server.
 	httpHost: "127.0.0.1",
@@ -12,7 +11,9 @@ exports.trilaud_config = {
 	log2file: true,			//set it to false to log only to console. if you use pm2 it logs by default
 	restartOnCapError: true	//set it to false to not restart the client on capabilitieserrors
 							//DANGEROUS! only use it if you know what you're doing pajaS
-}
+};
+
+export {trilaud_config};
 
 /* 
  * oauth code must be an "implicit flow" code. Do not use server or renewable

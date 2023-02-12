@@ -1,14 +1,14 @@
 "use strict";
-const { ChatClient } = require("@kararty/dank-twitch-irc");
-const player = require("node-wav-player");
-const fs = require("fs");
-const os = require("os");
-const chalk = require("chalk");
-const http = require("http");
-const process = require("process");
-const winston = require("winston");
-const got = require("got");
-const { tableCSS, detectLineEndings, gftime, memusage, sleep } = require("./util.js");
+import { ChatClient } from "@kararty/dank-twitch-irc";
+import player from "node-wav-player";
+import fs from "fs";
+import os from "os";
+import chalk from "chalk";
+import http from "http";
+import process from "process";
+import winston from "winston";
+import got from "got";
+import { tableCSS, detectLineEndings, gftime, memusage, sleep } from "./util.js";
 global.trl = new Object;
 let conf, ptl;
 let twd="./";
@@ -17,7 +17,7 @@ let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
 let counters = {anon: 0, self: 0, normal: 0};
 
-LoadConf();
+await LoadConf();
 trl.conf = conf;
 
 if(conf.log2file){
@@ -43,10 +43,11 @@ if(conf.log2file){
 		transports: [ new winston.transports.Console({level: "info"}) ]});
 }
 
+/*
 if(conf.autoreplyModule){
 	let failed = false;
 	try{
-		trl.autoreply = require(conf.autoreplyModule);
+		// NaM
 	}
 	catch(err){
 		ptl.error(`Unable to load autoreply module: ${err}`);
@@ -56,6 +57,7 @@ if(conf.autoreplyModule){
 		ptl.warn(`Autoreply module ${conf.autoreplyModule} loaded successfully`);
 	}
 }
+*/
 
 process.on("SIGUSR2", ReloadChannels);
 if(typeof(conf.textcolors)==="undefined"){
@@ -73,7 +75,7 @@ catch(err){
 	ptl.error(chalk.red(`<error> Unable to write pid to file: ${err}`));
 }
 
-ptl.warn(`<startup> TriLaud v0.1.3 starting up at ${gftime()}`);
+ptl.warn(`<startup> TriLaud v0.2.0 starting up at ${gftime()}`);
 ptl.info(`<startup> System: ${os.platform} @ ${os.hostname}, node version: ${process.versions.node}, v8 version: ${process.versions.v8}`);
 
 if(conf.pingsound==="")
@@ -333,40 +335,45 @@ function registerGift(inch, unick){
 }
 
 function LoadConf(){
-	let i;
+	return new Promise(async (resolve, reject)=>{
+	let i, n;
 	i = process.argv.findIndex(a => a==="-d");
 	if(i===-1){
 		try {	
-		conf = require("./config.js").trilaud_config;
+		n = await import("./config.js");
+		conf = n.trilaud_config;
 		}
 		catch(err){
-			console.error("The configuration file config.js is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
-			console.err(err);
-			process.exit(1);
+			console.error("<solo config> The configuration file config.js is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+			reject(err);
+			return;
 		}
-		return;
-	}
+	} else {
 	if(!process.argv[i+1]){
 		//intentionally using console.log here
 		console.log(`Usage: node triLaud.js -d [config file dir]`);
 		process.exit(0);
 	}
 	try{
-		conf = require("./"+process.argv[i+1]+"/config.js").trilaud_config;
+		n = await import("./"+process.argv[i+1]+"/config.js");
+		conf = n.trilaud_config;
 	}
 	catch(err){
-		console.error("The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
-		console.error(err);
-		process.exit(1);
+		console.error("<multi config> The configuration file config.js (in the specified directory) is missing or invalid. Please create the file or fix errors in the existing one. The full error was this:");
+		reject(err);
+		return;
 	}	
 	twd="./"+process.argv[i+1]+"/";
+	}
+	
 	
 	if(!conf.clientid || conf.clientid===""){
 		console.error("Missing or unconfigured setting 'clientid'. Please update your config or set the value.");
 		console.error("See config.js.example on explanation what you need.");
 		process.exit(1);
 	}
-	return;
+	resolve("dun Okayeg");
+});
 }
 
 function whoami(){
@@ -378,9 +385,13 @@ return new Promise(async (resolve, reject) => {
 			'Authorization': 'Bearer '+conf.oauth,
 			'Client-ID': conf.clientid
 		},
-		retry: 2,
-		timeout: 2000
-	};
+		retry: {
+			limit: 2
+		},
+		timeout: {
+			request: 3000
+		}
+	}
 	let retval;
 	try{
 		retval = await got(https_options);

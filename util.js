@@ -1,13 +1,13 @@
-const df = require("date-fns");
-const process = require("process");
+import df from "date-fns";
+import process from "process";
 
-const tableCSS = `<style>table {border-collapse: collapse; border: 2px solid black;} tr {border: 2px solid black;} td {border: 1px solid black;}</style>`;
+export const tableCSS = `<style>table {border-collapse: collapse; border: 2px solid black;} tr {border: 2px solid black;} td {border: 1px solid black;}</style>`;
 
-function sleep(ms) {
+export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function detectLineEndings(inTxt){
+export function detectLineEndings(inTxt){
 	const cr	= inTxt.split("\r").length;
 	const lf	= inTxt.split("\n").length;
 	const crlf	= inTxt.split("\r\n").length;
@@ -18,7 +18,7 @@ function detectLineEndings(inTxt){
 	else return "LF";
 }
 
-function gftime(){
+export function gftime(){
 	switch (trl.conf.dateformat){
 		case "DMY":
 			return df.format(new Date, "dd-MM-yyyy HH:mm:ss");
@@ -29,13 +29,7 @@ function gftime(){
 		}
 }
 
-function memusage(){
+export function memusage(){
 	let gg = Number(process.memoryUsage().rss)/1024/1024;
 	return `${gg.toFixed(2)}MiB`;
 }
-
-exports.tableCSS = tableCSS;
-exports.detectLineEndings = detectLineEndings;
-exports.gftime = gftime;
-exports.memusage = memusage;
-exports.sleep = sleep;

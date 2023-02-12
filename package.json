@@ -1,7 +1,8 @@
 {
   "name": "trilaud",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "twitch emote and gift farmer WideHardo",
+  "type": "module",
   "main": "triLaud.js",
   "scripts": {
     "testformat": "npx eslint ./"
@@ -16,11 +17,11 @@
   ],
   "dependencies": {
     "@kararty/dank-twitch-irc": "^5.0.1",
-    "chalk": "4.x.x",
+    "chalk": "^5.2.0",
     "date-fns": "^2.29.3",
     "node-wav-player": "https://github.com/noiredayz/node-wav-player/archive/refs/tags/v.0.2.2.tar.gz",
     "winston": "^3.8.2",
-    "got": "11.x.x"
+    "got": "^12.5.3"
   },
   "author": "noiredayz",
   "license": "GPL-3.0-or-later",
