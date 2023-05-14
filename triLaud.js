@@ -138,17 +138,6 @@ function onConnect(){
 
 async function onReady(){
 	ptl.info(chalk.green(`<cc> Logged in! Chat module ready.`));
-	let ident;
-	try{
-		ident = await whoami();
-	}
-	catch(err){
-		ptl.error(chalk.red(`Error while trying to read the identity of your user: ${err}`));
-		ptl.error(chalk.red(`triLaud cannot continue, terminating.`));
-		process.exit(1);
-	}
-	trl.identity = ident;
-	ptl.info(chalk.green(`Found identity: ${ident.login}(${ident.display_name}), UID ${ident.id}`));
 	JoinChannels();
 }
 
@@ -235,7 +224,31 @@ async function incomingMessage(inMsg){
 	}
 }
 
-client.connect();
+async function Start(){
+	let ident;
+	try{
+		ident = await whoami();
+	}
+	catch(err){
+		ptl.error(chalk.red(`Error detected: ${err.message}`));
+		if(err.message==='Response code 401 (Unauthorized)'){
+			ptl.error(chalk.red(`HTTP 401 (Unauthorized) while trying to look up identity using helix`));
+			ptl.error(chalk.red(`Your login token has expired, please generate a new oauth code, update config then restart the application.`));
+			ptl.warn(chalk.yellow(`Note: The program will now idle here indefinitely to prevent endless restart cycles with pm2 and unnecessary CPU load and TMI hammering.`));
+			while(1){
+				await(sleep(1000));
+			}
+		} else {
+			ptl.error(chalk.red(`triLaud cannot continue, terminating.`));
+			process.exit(1);
+		}
+	}
+	trl.identity = ident;
+	ptl.info(chalk.green(`Found identity: ${ident.login}(${ident.display_name}), UID ${ident.id}`));
+	client.connect();
+}
+
+Start();
 
 function LoadChannels(inFile){
 	let buff, inch, le, rv=0;
