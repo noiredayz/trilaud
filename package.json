@@ -21,7 +21,7 @@
     "date-fns": "^2.30.0",
     "node-wav-player": "https://github.com/noiredayz/node-wav-player/archive/refs/tags/v.0.2.2.tar.gz",
     "winston": "^3.8.2",
-    "got": "^12.6.0"
+    "got": "^13.0.0"
   },
   "author": "noiredayz",
   "license": "GPL-3.0-or-later",
