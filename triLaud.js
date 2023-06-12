@@ -15,6 +15,7 @@ let twd="./";
 const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
 let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
+let loadStatus = "init";
 let counters = {anon: 0, self: 0, normal: 0};
 
 await LoadConf();
@@ -138,6 +139,7 @@ function onConnect(){
 
 async function onReady(){
 	ptl.info(chalk.green(`<cc> Logged in! Chat module ready.`));
+	loadStatus = "ok";
 	JoinChannels();
 }
 
@@ -235,6 +237,7 @@ async function Start(){
 			ptl.error(chalk.red(`HTTP 401 (Unauthorized) while trying to look up identity using helix`));
 			ptl.error(chalk.red(`Your login token has expired, please generate a new oauth code, update config then restart the application.`));
 			ptl.warn(chalk.yellow(`Note: The program will now idle here indefinitely to prevent endless restart cycles with pm2 and unnecessary CPU load and TMI hammering.`));
+			loadStatus = "loginfail";
 			while(1){
 				await(sleep(1000));
 			}
@@ -424,6 +427,18 @@ async function requestHandler(req, res){
 	ptl.info(`<http> Incoming request for "${req.url}"`);
 	let inurl = req.url.split("?");
 	let icon=undefined;
+	if(loadStatus === "init"){
+		res.writeHead(503, {'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', 'Retry-After': '10'});
+		res.write("triLaud is still in initialization phase. Please try agane later.");
+		res.end();
+		return;
+	}
+	if(loadStatus === "loginfail"){
+		res.writeHead(503, {'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache'});
+		res.write("Login failure: your oauth token has expired. Please generate a new one then restart triLaud.");
+		res.end();
+		return;
+	}
 	switch(inurl[0]){
 		case "/index.htm":
 		case "/index.html":
