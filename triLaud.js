@@ -1,5 +1,5 @@
 "use strict";
-import { ChatClient } from "@kararty/dank-twitch-irc";
+import { ChatClient } from "@mastondzn/dank-twitch-irc";
 import player from "node-wav-player";
 import fs from "fs";
 import os from "os";
@@ -12,7 +12,7 @@ import { tableCSS, detectLineEndings, gftime, memusage, sleep } from "./util.js"
 global.trl = new Object;
 let conf, ptl;
 let twd="./";
-const joinDelay = 580; //in ms, max 20 joins per 10 seconds. 
+const joinDelay = 580; //in ms, max 20 joins per 10 seconds.
 let channels = [], activechannels = [], chgifts=[], oilers=[];
 let joinerStatus = 0;
 let loadStatus = "init";

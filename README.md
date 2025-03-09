@@ -81,6 +81,7 @@ JSON Endpoints (for machines, not for us humans):
 I didn't really test it, but alts joining channels might affects each others ratelimits. I suggest you start alts after each other and not parallel.
 
 ## Changelog ##
+* **2025-03-09** updated dependencies
 * **2023-02-12** Conversion to MJS
 * **2022-11-26** Now uses Helix to confirm own identity
 * **2022-01-02** New year, new and upaded deps
