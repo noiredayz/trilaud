@@ -20,7 +20,7 @@
     "chalk": "^5.4.0",
     "date-fns": "^4.1.0",
     "node-wav-player": "https://github.com/noiredayz/node-wav-player/archive/refs/tags/v.0.2.2.tar.gz",
-    "winston": "^3.17.0",
+    "winston": "^3.18.3",
     "got": "^14.4.6"
   },
   "author": "noiredayz",
