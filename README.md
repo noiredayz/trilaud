@@ -33,11 +33,11 @@ compatible web interface to view stats about gifts.
 * [Free software](https://www.gnu.org/philosophy/free-sw.en.html) under the GNU GPL version 3
  
 ## System requirements ##
-* NodeJS 16.x LTS
-* any OS that can run node 10
-* any hardware that can run an OS that can run node 10. Tested and used on 32bit hardfloat ARM and x86
+* NodeJS 24 LTS
+* any OS that can run node 24
+* any hardware that can run an OS that can run node 24
 * Internet connection
-* 60MB free RAM and 11MB free space (additional free space is required for node and log files of PM2 if used)
+* 31MB free RAM and 11MB free space (additional free space is required for node and log files of PM2 if used)
 * sound playback requires Windows 7+, Linux, OpenBSD, FreeBSD or DragonfyBSD. Additional OS' may be supported once I add them to [node-wav-player](https://github.com/noiredayz/node-wav-player)
 
 ## How to use? ##
