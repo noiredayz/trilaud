@@ -395,7 +395,6 @@ function LoadConf(){
 function whoami(){
 return new Promise(async (resolve, reject) => {
 	const https_options = {
-		url: "https://api.twitch.tv/helix/users",
 		method: "GET",
 		headers:{
 			'Authorization': 'Bearer '+conf.oauth,
@@ -410,7 +409,7 @@ return new Promise(async (resolve, reject) => {
 	}
 	let retval;
 	try{
-		retval = await got(https_options);
+		retval = await got("https://api.twitch.tv/helix/users", https_options);
 	}
 	catch(err){
 		reject(err);
