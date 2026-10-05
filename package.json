@@ -30,6 +30,6 @@
   },
   "homepage": "https://github.com/noiredayz/trilaud#readme",
   "devDependencies": {
-    "eslint": "~10.8.1"
+    "eslint": "~10.12.0"
   }
 }
